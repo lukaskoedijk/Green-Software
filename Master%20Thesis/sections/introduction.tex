@@ -1,0 +1,55 @@
+\chapter{Introduction}
+\label{ch:introduction}
+% Context: what is the bigger scope of the problem you are trying to solve? Try to connect to societal/economical challenges.
+% Problem Analysis: Here you present your analysis of the problem situation that your research will address.
+% How does this problem manifest itself at your host organisation?
+% Also summarises existing scientific insight into the problem.
+%maybe not only milieu but also money
+Currently more and more people are concerned with global warming. Global warming is a result of the emission of greenhouse gasses during energy generation of not green energy options. Because of this a lot of people want to change to green energy generation to help solve this problem. Another solution is to decrease the energy consumption. The energy consumption of communication networks, personal computers and data centers world wide is increasing over the years \cite{van2014trends}. This happens with a growth rate of $10\%$, $5\%$ and $4\%$ respectively \cite{van2014trends}. Therefore it is important to research ways of decreasing the energy consumption. In the field of hardware there is, according to Koomey's law, an increase of the number of computations per Joule. However this is not enough, because tasks need more computations to complete due to the confidence in the improvement of hardware \cite{verdecchia2017estimating}. For this reason we need to look at possibilities in decreasing the energy consumption from a software perspective.
+
+
+\section{Problem statement}
+The energy consumption of communication networks, personal computers and data centers are increasing yearly. There are two ways of decreasing the energy consumption, by decreasing the energy consumption of hardware or software. Scientific research is mostly focused on decreasing the energy consumption of hardware. There are also some papers about reducing the energy consumption in the software process and the decision making process. A small bit of research is done on the energy consumption of software, but their research goal is to estimate the energy consumption. Therefore what I miss and want to look into is if there is a good way of writing code regards the energy consumption.
+
+\subsection{Research questions}
+%To tackle these issues, we investigate ...
+During this research I want to answer the following two existence questions: (1) \textbf{Is there a difference in the energy consumption of software projects in different programming languages that have the same functionality} and (2) \textbf{Is there a difference in energy consumption of different software projects (in the same programming language) that have the same functionality}? To answer these questions I first need to answer the three description and classification questions listed below.
+\begin{itemize}
+    \item How can the energy consumption of a software project be measured?
+    \item How do we proof if two programs have the same functionality?
+    \item When is a difference in energy consumption big enough to be called a difference?
+\end{itemize}
+
+Based on the results I find when answering the second existence question, I want to look into what this difference is on code level. To do this I want to answer the descriptive/comparative question \textbf{what is the difference on code level}? This question is only useful when there is a difference in the energy consumption of software project in the same programming language that have the same functionality. Otherwise we can't link the difference in energy consumption to the difference in the code.
+
+\subsection{Research method}
+As method I want to use a controlled experiment. In this experiment I will run different software projects to measure the energy consumption. Here the projects are the variable input, the energy consumption the output and everything else like compiler and energy consumption calculations should be constant.
+For the first research question the hypothesis is that there is a difference in the energy consumption based on the programming language chosen. The hypothesis of the second research question is that there is a difference in the energy consumption of different software projects (in the same programming language) that have the same functionality.
+
+\subsubsection{Data}
+For the first research question I need programs that have the same functionality, but are written in a different programming language. I want to use library code for this, because they are viewed as well-thought-out solutions to a problem. For the second research question I want to use the library as a baseline. The other software projects I use need to have the same functionality as the library. Thus I need to find implementations of the functionality the library has. Options for finding software projects with the same functionality are: student code of the same assignment, interview code and competition code. I already looked at some competition code on git from the Euler project. This seems to be the best option, because these projects are publicly available and can therefore also be tested by others.
+
+When proving that all the projects have the same functionality I will define properties for the input and output and test if these properties hold for all the projects \cite{mens2004survey}.
+
+To proof that the projects have different values for the energy consumption we will preform the independent two sample t-test. This test calculates if two distributions are in the same distribution. This test can only be use if the both distributions are normally or close to normally distributed, have the same size and have the same variance. To check if they are normally distributed we can use the Chi-square test and to check if the variance is the same we can use the f-test.
+
+\subsubsection{Measuring energy consumption}
+When measuring the energy consumption of a project you have to take into account the energy consumption of CPU, memory and disk \cite{acar2016impact}. The measurements can be done with a hardware or software approach. A hardware approach is more accurate but also more expensive \cite{acar2016impact}. I want to use a hardware approach, luckily as a student of the UvA I have access to the DAS-4 and the DAS-5. The DAS is a distributed system that can also do energy measurements \cite{bal2016medium}. You can connect to the DAS using ssh with an username and a password. The nodes that can measure the energy are located at the VU. To measure the energy I need to run a job on the DAS-5 and use the DAS-4 to measure the energy consumption. When running a job I need to specify witch node I want to run the job on, because not all nodes can be measured for the energy consumption. This is done by using the \textit{-w} flag while using the command \textit{srun}. The measuring can then be done by using the \textit{smnpwalk} command and then filtering out the information by using \textit{fgrep Energy}.
+
+\subsubsection{Interpret results}
+When there is a difference in the energy consumption of different software projects in the same programming language I will look at the different projects on code-level. Here I will try to find what is causing a project to have a lower or higher energy consumption. These findings will then be tested by letting myself write two versions, where I think one is written badly regards the energy consumption and one that is written good. I will then run the two version and check if the good version has a lower energy consumption.
+
+\section{Contributions}
+Our research makes the following contributions:
+\begin{enumerate}
+	\item A script that measures the energy consumption
+	\item A data set of software project with the same functionality
+	\item Rules for writing good software regards the energy consumption
+\end{enumerate}
+
+\section{Outline}
+In Chapter~\ref{ch:background} we describe the background of this thesis. 
+Chapter~\ref{ch:research} describes ... 
+Results are shown in Chapter~\ref{ch:results} and discussed in Chapter~\ref{ch:discussion}. Chapter~\ref{ch:related_work}, contains the work related to this thesis.
+Finally, we present our concluding remarks in Chapter~\ref{ch:conclusion} together with future work.
+
