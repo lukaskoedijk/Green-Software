@@ -2,7 +2,7 @@
 
 # RUN THIS ON DAS-5
 # EXAMPLE: 
-# srun -N1 -w "node028" run_continues.sh  -o "primes_300000" -p "3" -f "python /home/lkoedijk/programs/primes.py"
+# srun -N1 -w "node028" run_continues.sh  -o "primes_300000" -p "3" -f ["python /home/lkoedijk/programs/primes.py"]
 
 # PLEASE CHANGE TO YOUR HOME DIRECTORY
 measure_script="/home/lkoedijk/measure_continues.sh"
@@ -52,7 +52,13 @@ ssh lkoedijk@fs0.das4.cs.vu.nl $kill_measurement
 ssh lkoedijk@fs0.das4.cs.vu.nl $measure_script -o $output -p $port &
 
 # Run program
-$file
+FieldSeparator=$IFS
+IFS=,
+for command in $file;
+do
+eval $command
+done
+IFS=$FieldSeparator
 
 # Stop measurement
 ssh lkoedijk@fs0.das4.cs.vu.nl $kill_measurement

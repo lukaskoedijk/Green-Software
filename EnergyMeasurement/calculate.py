@@ -11,7 +11,7 @@ labels = ['Name', 'Joule(surface)', 'kWh(surface)', 'kWh(meter)',
 
 # probably making separate result directories for a single file,
 # because of running a program multiple times
-path = os.getcwd() + '/results'
+path = os.getcwd() + '/results/test'
 files = os.listdir(path)
 if ('.DS_Store' in files):
     files.remove('.DS_Store')
@@ -21,7 +21,7 @@ for name in files:
     if os.path.isdir('results/'+name):
         continue
 
-    data = pandas.read_csv('results/' + name, sep='\s*,\s*',
+    data = pandas.read_csv('results/test/' + name, sep='\s*,\s*',
                            engine='python')
 
 #    if (name == 'primes.csv'):
