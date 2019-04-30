@@ -10,7 +10,7 @@ JavaScript:
     -node pidigits.js 30
 
 Python3:
-    -python3 -OO pidigits.python3.py 30
+    -python3 pidigits.python3.py 30
 
 PHP:
     -php -n pidigits.php.php 30
@@ -22,12 +22,16 @@ C#:
 C:
   Compile:
     -(for 1,4)gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native  pidigits.gcc.c -o pidigits.gcc_run -lgmp
+  Compile no optimization:
+    -(for 1,4)gcc pidigits.gcc.c -o pidigits.gcc_run -lgmp
   Run:
     -./pidigits.gcc_run 30
 
 C++:
   Compile:
     -(for 4)g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -std=c++14 -g pidigits.gpp-4.c++ -o pidigits.c++.o && g++ pidigits.c++.o -o pidigits.gpp_run -lgmp -lgmpxx
+  Compile no optimization:
+    -(for 4)g++ -c pidigits.gpp-4.c++ -o pidigits.c++.o && g++ pidigits.c++.o -o pidigits.gpp_run -lgmp -lgmpxx
   Run:
     -./pidigits.gpp_run 30
 

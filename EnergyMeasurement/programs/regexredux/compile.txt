@@ -10,7 +10,7 @@ JavaScript:
     -node regexredux.js 0 < input.txt
 
 Python3:
-    -python3 -OO regexredux.python3.py 0 < input.txt
+    -python3 regexredux.python3.py 0 < input.txt
 
 PHP:
     -php -n regexredux.php 0 < input.txt
@@ -23,6 +23,8 @@ C:
   Compile:
     -(for 2)gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native  regexredux.gcc-2.c -o regexredux.gcc_run -lpcre
     -(for 3,4)gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -fopenmp regexredux.gcc-3.c -o regexredux.gcc_run -lpcre
+  Compile no optimization:
+    -(for 2,3,4)gcc regexredux.gcc-2.c -o regexredux.gcc_run -lpcre
   Run:
     -./regexredux.gcc_run 0 < input.txt
 

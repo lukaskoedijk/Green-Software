@@ -1,7 +1,7 @@
 \chapter{Data}
 \label{ch:data}
 
-\section{Gathering data}
+\section{Programming languages}
 To find data I first need to decide which programming languages to choose for testing. I did this by looking into what the most popular and most used programming languages are. For this question it depends who you ask what the resulting most popular programming language is. Therefor I used four sources to determine which programming language to use. The four sources are indeed, git-hub, TIOBE and PYPL.\\
 
 Indeed is a job search site. They looked at the percentage of jobs with a programming language in their name in the tech software category \cite{ray:2018}. Thus the more job offering for a programming language the more popular that programming language is. The problem with this method is that job offerings do not show how many people work with a programming language, but only which programming language has a shortage in programmers. Based on data form September 2018 the top ten according to this method is Java, JavaScript, HTML, Python, C\#, C++, XML, Ruby, PHP and Perl.\\
@@ -15,5 +15,203 @@ PYPL index stands for the PopularitY Programming Language index. They look at ho
 When languages are in all the four top tens I labelled them as popular and these language I am going to investigate, thus the languages Java, JavaScript, Python, C\#, C++ and PHP. I also choose to investigate C and Ruby. C because it was in three of the four top tens and I found it interesting to see the difference in the variations of C like C++ and C\#. Ruby was in two of the top tens, but also 13th according to TIOBE and 12th in the PYPL index. Thus Ruby was close to be in all the top tens.
 
 
-\section{Testing functionality}
+% Binarytrees:
+% -Java:
+% 	-1 -> not correct output
+% 	steps:
+% 		- mv binarytrees.java-7.java binarytrees.java
+% 		- javac -d . binarytrees.java
+% 		- java binarytrees 21
+% 		- rm -v binarytrees.class binarytrees\$1.class binarytrees\$TreeGenerator.class binarytrees\$TreeNode.class 		(just for clean up, but new javac overwrites these files)
+%   das5:
+%       -srun javac binarytrees.java && java binarytrees 21
+%       -srun -N1 -w "node028" run_continues.sh  -o "test_java" -p "3" -f "javac -d /home/lkoedijk/binarytrees /home/lkoedijk/binarytrees/binarytrees.java,java -cp /home/lkoedijk/binarytrees/ binarytrees 21"
+%
+% 	java version local (java -version):
+% 		- java version "1.8.0_191"
+% 		- Java(TM) SE Runtime Environment (build 1.8.0_191-b12)
+% 		- Java HotSpot(TM) 64-Bit Server VM (build 25.191-b12, mixed mode)
+%     das5:
+%         -openjdk version "1.8.0_161"
+%         -OpenJDK Runtime Environment (build 1.8.0_161-b14)
+%         -OpenJDK 64-Bit Server VM (build 25.161-b14, mixed mode)
+
+% -Python:
+%     steps:
+%         -mv binarytrees.python3.py binarytrees.py
+%         -python3 binarytrees.py 21
+%     das5:
+%         -srun -N1 -w "node028" run_continues.sh  -o "test_py" -p "3" -f "python3 /home/lkoedijk/binarytrees/binarytrees.python3.py 21"
+        
+%     python3 local version (python3 --version):
+%         - Python 3.6.0 :: Anaconda custom (x86_64)
+%     das5:
+%         -Python 3.4.5
+        
+% -JavaScript:
+%     steps:
+%         -cp -L binarytrees.node binarytrees.js
+%         -node binarytrees.js 21
+%    das5:
+%       -srun -N1 -w "node028" run_continues.sh  -o "test_javascript" -p "3" -f "node /home/lkoedijk/binarytrees/binarytrees.js 21"
+        
+%     javascript local version (node -v):
+%         -v11.10.0
+%     das5:
+%         -v6.12.3
+        
+% -PHP:
+%     -4, 5, 6 -> error: undefined function pcntl_fork()
+%     steps:
+%         -php -n -d memory_limit=4096M binarytrees.php 21
+%     das5:
+%         -srun -N1 -w "node028" run_continues.sh  -o "test_php" -p "3" -f "php -n -d memory_limit=4096M /home/lkoedijk/binarytrees/binarytrees.php 21" 
+        
+%     php local version (php -v):
+%         -PHP 7.1.23 (cli) (built: Nov  7 2018 18:20:35) ( NTS )
+%         -Copyright (c) 1997-2018 The PHP Group
+%         -Zend Engine v3.1.0, Copyright (c) 1998-2018 Zend Technologies
+%     das5:
+%         -PHP 5.4.16 (cli) (built: Mar  7 2018 13:34:47) 
+%         -Copyright (c) 1997-2013 The PHP Group
+%         -Zend Engine v2.4.0, Copyright (c) 1998-2013 Zend Technologies
+        
+% -Ruby:
+%     steps:
+%         -ruby -W0 binarytrees.yarv 21
+%     das5:
+%         -srun -N1 -w "node028" run_continues.sh  -o "test_php" -p "3" -f "ruby -W0 /home/lkoedijk/binarytrees/binarytrees.yarv 21"
+        
+%     ruby local version (irb -> RUBY_VERSION -> exit):
+%         -2.3.7
+%     das5:
+%         -2.0.0
+
+% -C:
+%     -3 -> error apr_pools.h not found
+%     steps:
+%         -/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -I/usr/include/apr-1.0 binarytrees.gcc.c -o binarytrees.gcc_run -lapr-1
+%         -./binarytrees.gcc_run 21
+    % das5:
+    %     -(for program 5)gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -I/usr/include/apr-1.0 -pthread binarytrees.gcc-5.c -o binarytrees.gcc_run
+    %     -(for program 0)gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -I/usr/include/apr-1.0 /home/lkoedijk/binarytrees/binarytrees.gcc.c -o binarytrees.gcc_run -lm
+    %     -(for program 3) need apr_pools.h
+    %     -srun -N1 -w "node028" run_continues.sh  -o "test_c" -p "3" -f "/home/lkoedijk/binarytrees/binarytrees.gcc_run 21"
+        
+%     c local version (gcc -v):
+%         -Configured with: --prefix=/Applications/Xcode.app/Contents/Developer/usr --with-gxx-include-dir=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/usr/include/c++/4.2.1
+%         -Apple LLVM version 10.0.0 (clang-1000.11.45.5)
+%         -Target: x86_64-apple-darwin18.2.0
+%         -Thread model: posix
+%         -InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+%     das5:
+%         -Using built-in specs.
+%         -COLLECT_GCC=gcc
+%         -COLLECT_LTO_WRAPPER=/cm/local/apps/gcc/6.3.0/libexec/gcc/x86_64-pc-linux-gnu/6.3.0/lto-wrapper
+%         -Target: x86_64-pc-linux-gnu
+%         -Configured with: ../gcc-6.3.0/configure --prefix=/cm/local/apps/gcc/6.3.0 --enable-languages=c,c++,fortran --with-gmp-include=/root/rpmbuild/BUILD/gcc-6.3.0-obj/../gcc-6.3.0/our-gmp --with-gmp-lib=/root/rpmbuild/BUILD/gcc-6.3.0-obj/../gcc-6.3.0/our-gmp/.libs --with-mpc-include=/root/rpmbuild/BUILD/gcc-6.3.0-obj/../gcc-6.3.0/our-mpc/src --with-mpc-lib=/root/rpmbuild/BUILD/gcc-6.3.0-obj/../gcc-6.3.0/our-mpc/src/.libs --with-mpfr-include=/root/rpmbuild/BUILD/gcc-6.3.0-obj/../gcc-6.3.0/our-mpfr/src --with-mpfr-lib=/root/rpmbuild/BUILD/gcc-6.3.0-obj/../gcc-6.3.0/our-mpfr/src/.libs
+%         -Thread model: posix
+%         -gcc version 6.3.0 (GCC) 
+        
+% c++:
+%     -2,6 -> wrong answers
+%     -9 -> missing apr_pools.h
+%     steps:
+%         -(for 1,3)g++ -c -pipe -O3 -fomit-frame-pointer -march=native /home/lkoedijk/binarytrees/binarytrees.gpp-3.c++ -o /home/lkoedijk/binarytrees/binarytrees.gpp.c++.o && g++ /home/lkoedijk/binarytrees/binarytrees.gpp.c++.o -o /home/lkoedijk/binarytrees/binarytrees.gpp_run -lpthread -lboost_system
+%         -(for 8)g++ -c -pipe -O3 -fomit-frame-pointer -march=native -fopenmp /home/lkoedijk/binarytrees/binarytrees.gpp-8.c++ -o /home/lkoedijk/binarytrees/binarytrees.gpp.c++.o && g++ /home/lkoedijk/binarytrees/binarytrees.gpp.c++.o -o /home/lkoedijk/binarytrees/binarytrees.gpp_run -lboost_system -fopenmp
+%         -./binarytrees.gpp_run 21
+
+    % fannkuchredux:
+    %     -2,3,5 error
+    
+%     c++ local version (g++ -v):
+%         -Configured with: --prefix=/Applications/Xcode.app/Contents/Developer/usr --with-gxx-include-dir=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/usr/include/c++/4.2.1
+%         -Apple LLVM version 10.0.0 (clang-1000.11.45.5)
+%         -Target: x86_64-apple-darwin18.2.0
+%         -Thread model: posix
+%         -InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+%     das5:
+%         -Using built-in specs.
+%         -COLLECT_GCC=g++
+%         -COLLECT_LTO_WRAPPER=/cm/local/apps/gcc/6.3.0/libexec/gcc/x86_64-pc-linux-gnu/6.3.0/lto-wrapper
+%         -Target: x86_64-pc-linux-gnu
+%         -Configured with: ../gcc-6.3.0/configure --prefix=/cm/local/apps/gcc/6.3.0 --enable-languages=c,c++,fortran --with-gmp-include=/root/rpmbuild/BUILD/gcc-6.3.0-obj/../gcc-6.3.0/our-gmp --with-gmp-lib=/root/rpmbuild/BUILD/gcc-6.3.0-obj/../gcc-6.3.0/our-gmp/.libs --with-mpc-include=/root/rpmbuild/BUILD/gcc-6.3.0-obj/../gcc-6.3.0/our-mpc/src --with-mpc-lib=/root/rpmbuild/BUILD/gcc-6.3.0-obj/../gcc-6.3.0/our-mpc/src/.libs --with-mpfr-include=/root/rpmbuild/BUILD/gcc-6.3.0-obj/../gcc-6.3.0/our-mpfr/src --with-mpfr-lib=/root/rpmbuild/BUILD/gcc-6.3.0-obj/../gcc-6.3.0/our-mpfr/src/.libs
+%         -Thread model: posix
+%         -gcc version 6.3.0 (GCC) 
+
+%C#:
+%   steps:
+%       -mcs binarytrees.cs
+%       -srun -N1 -w "node028" run_continues.sh  -o "test_c" -p "3" -f "mono /home/lkoedijk/binarytrees/binarytrees.exe 21"
+
+
+%!!!!Knucleotide error with only javascript file, different error local and on das
+%!!!!Knucleotide error with only c file, no khash.h file
+%!!!!Pidigits all three python files, No module named 'gmpy'
+%!!!!Regexredux php with error, Call to undefined function msg_get_queue()
+%!!!!Regexredux c++ 1,2,5: fatal error: 're2/re2.h' file not found
+%               c++ 4:fatal error: string_view: No such file or directory
+
+\section{Gathering data}
+To be able to compare different programs they need to have the same functionality. To get this done I looked at \textit{the computer language benchmark game} \cite{gouy:2019}. This benchmark game compares different programs and languages based on their speed, memory usage, zipped program size and CPU usage. They have ten different problems with a lot of programs from different language. Everyone can submit a program if it holds to the two requirements. The requirements are that the program has the correct output and that it uses the same algorithm. This is important because we want to compare the way of writing a program and the difference in programming language, but not the difference in algorithm used. For every program used they also have the compiling steps listed and for every problem the correct output.\\
+
+I went through all the ten problems and downloaded the programs from the chosen languages. After this I tested if I could compile the programs, run them and have the correct output. This was all done on the DAS5 to make sure there were no local dependencies. There were three problems, Knucleotide, Pidigits and Regexredux, that didn't had for every programming language a program that could be run or had the correct output. I decided to still run these problems and just have a few empty slot in our results. For Knucleotide the programming languages were JavaScript and C, for Regexredux it was PHP and C++ and for Pidigits it was Python3. I have this data set on a public Git-Hub repository along side other material needed for my thesis. The link to this repository is \url{https://github.com/lukaskoedijk/Green-Software} and for the data set move to \textit{EnergyMeasurement/programs}.\\
+
+This resulted in a large data set. With data from the benchmark game I calculated that to run all the programs for the eight programming languages for the ten problems would take around nine hours. Because this is a large amount of time I decided to only measure every program three times, which would take around 27 hours. Of course running programs more often would give more accurate results, but this was just too time consuming.\\
+
+% PHP:-d memory_limit=1024M -> set entry memory_limit to 1024M
+% C:  -pipe -> use pipe instead of temporary files for communication                     between compiling stages 
+%     -Wall -> turn on multiple warning flags
+%     -O3 -> turns on a lot of optimization flags
+%     -fomit-frame-pointer -> optimization, Omit the frame pointer in                            functions that don’t need one
+%     -march=native -> pick the architecture of the host system
+%     -lm -> link math library
+%     (-lapr-1 -> link apr-1 library)
+%     (-lgomp -> link gomp library)
+%     -fopenmp -> enable handling of OpenMP directives(multithreading)
+%     -D_FILE_OFFSET_BITS=64 -> this forces all file access calls to use                             the 64 bit variants
+%     -I/usr/include/apr-1.0 -> specify directory to search for header                               files
+%     -pthread -> define additional macros required for using the POSIX              threads library
+%     -IInclude -> ?
+%     -mno-fma -> enable the use of instructions in the no-fma instruction              set
+%     -fno-finite-math-only -> ?
+%     -lgmp -> link gmp library
+%     -lpcre -> link pcre library
+% c++:
+%     -c -> compile or assemble the source files, but do not link
+%     -lpthread -> link pthread library
+%     -std=c++11(c++14) -> determine the language standard
+%     -lboost_thread -> link boost_thread library
+%     -lboost_system -> link boost_system library
+%     -mfpmath=sse -> generate floating-point arithmetic for sse
+%     -msse3 -> enable the use of instructions in the MSSE3 instruction              set
+%     -Wl,--no-as-needed -> pass option no as needed to linker?
+%     -lgmpxx -> link gmpxx library
+%     -flto -> runs the standard link-time optimizer
+%     -mtune=native -> specify the name of the target processor for which                     GCC should tune the performance of the code
+%     -O0 -> disable optimizations
+% Ruby: -w0 -> verbose mode silence
+
+Before running all the programs some needed to be compiled first. The compiler can nowadays do a lot of optimizations of the code. During this research we want to see the result of user decisions on the energy consumption. Therefore we limited the optimizations as much as possible. This means that we removed all the optimization flags except the ones needed for the compilation. Also the compiler version of the different languages is important. To give a good pictures of were we stand today we need to use the most recent stable version. Unfortunately it isn't that easy to update the language versions on the DAS. Therefore I used the versions that were already on their and these programming language versions are listed alongside the compiler used in table \ref{tab:version}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+Languages  & Compiler & Version   \\ \hline
+Java       & javac    & 1.8.0\textunderscore161 \\ \hline
+JavaScript & node     & 6.12.3    \\ \hline
+Python     & python   & 3.4.5     \\ \hline
+PHP        & php      & 5.4.16    \\ \hline
+C          & gcc      & 6.3.0     \\ \hline
+C++        & gcc      & 6.3.0     \\ \hline
+C\#         & mcs      & 5.10.1.20 \\ \hline
+Ruby       & ruby     & 2.0.0     \\ \hline
+\end{tabular}
+\caption{All the different compilers and versions of the programming languages used}
+\label{tab:version}
+\end{table}
+
+% tell which problem is I/O(disk?), memory or CPU insensitive
+% description of problems can be found on site
 
