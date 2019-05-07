@@ -34,7 +34,7 @@ C:
 C++:
   Compile:
     -(for 1,3 (not working))g++ -c -pipe -O3 -fomit-frame-pointer -march=native   binarytrees.gpp.c++ -o binarytrees.c++.o && g++ binarytrees.c++.o -o binarytrees.gpp_run -lpthread
-    -(for 2)g++ -c -pipe -O3 -fomit-frame-pointer -march=native   binarytrees.gpp-2.c++ -o binarytrees.c++.o && g++ binarytrees.c++.o -o binarytrees.gpp_run
+    -(for 2)g++ -c -pipe -O3 -fomit-frame-pointer -march=native binarytrees.gpp-2.c++ -o binarytrees.c++.o && g++ binarytrees.c++.o -o binarytrees.gpp_run
     -(for 6,8)g++ -c -pipe -O3 -fomit-frame-pointer -march=native -fopenmp binarytrees.gpp-6.c++ -o binarytrees.c++.o && g++ binarytrees.c++.o -o binarytrees.gpp_run -fopenmp
     -(for 9 (not working))g++ -c -pipe -O3 -fomit-frame-pointer -march=native -fopenmp -I/usr/include/apr-1.0 binarytrees.gpp-9.c++ -o binarytrees.c++.o && g++ binarytrees.c++.o -o binarytrees.gpp_run -fopenmp -lapr-1
   Compile no optimizations:

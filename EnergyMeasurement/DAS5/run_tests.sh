@@ -821,3 +821,204 @@ do
     rm spectralnorm.gcc_run
 done
 END
+
+: <<'END'
+#Binarytrees - C++
+problem=0
+id=8
+#2 and 6 negative output
+file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id.c++"
+output_filename="allflags$all_flags.port$port.c++-$id.problem$problem.$count.csv"
+if [ $all_flags ]
+then
+    g++ -c -pipe -O3 -fomit-frame-pointer -march=native -fopenmp $file -o binarytrees.c++.o && g++ binarytrees.c++.o -o binarytrees.gpp_run -fopenmp -lboost_system
+else
+    g++ -c $file -o binarytrees.c++.o && g++ binarytrees.c++.o -o binarytrees.gpp_run -lboost_system
+fi
+command="./${problems[$problem]}.gpp_run ${input[$problem]}"
+echo $command
+run
+rm binarytrees.gpp_run
+
+#Fannkuchredux - C++
+problem=1
+ids=(1 4 6 7)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id.c++"
+    output_filename="allflags$all_flags.port$port.c++-$id.problem$problem.$count.csv"
+    if [ $id -eq 6 ] || [ $id -eq 7 ]
+    then
+        if [ $all_flags ]
+        then
+            g++ -c -pipe -O3 -fomit-frame-pointer -march=native $file -o fannkuchredux.c++.o && g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run
+        else
+            g++ -c -march=native $file -o fannkuchredux.c++.o && g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run
+        fi
+    elif [ $id -eq 1 ]
+    then
+        if [ $all_flags ]
+        then
+            g++ -c -pipe -O3 -fomit-frame-pointer -march=native -std=c++11 -pthread $file -o fannkuchredux.c++.o && g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run -lpthread
+        else
+            g++ -c -pthread $file -o fannkuchredux.c++.o && g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run -lpthread
+        fi
+    else
+        if [ $all_flags ]
+        then
+            g++ -c -pipe -O3 -fomit-frame-pointer -march=native -pthread $file -o fannkuchredux.c++.o && g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run -lpthread -lboost_thread -lboost_system
+        else
+            g++ -c $file -o fannkuchredux.c++.o && g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run -lboost_thread
+        fi
+    fi
+    command="./${problems[$problem]}.gpp_run ${input[$problem]}"
+    echo $command
+    run
+    rm fannkuchredux.gpp_run
+done
+
+#Fasta - C++
+problem=2
+ids=(1 2 3 4 5 6)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id.c++"
+    output_filename="allflags$all_flags.port$port.c++-$id.problem$problem.$count.csv"
+    if [ $id -eq 5 ] || [ $id -eq 6 ]
+    then
+        if [ $all_flags ]
+        then
+            g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 -std=c++11 $file -o fasta.c++.o && g++ fasta.c++.o -o fasta.gpp_run -lpthread
+        else
+            g++ -c $file -o fasta.c++.o && g++ fasta.c++.o -o fasta.gpp_run -lpthread
+        fi
+    else
+        if [ $all_flags ]
+        then
+            g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 $file -o fasta.c++.o && g++ fasta.c++.o -o fasta.gpp_run
+        else
+            g++ -c $file -o fasta.c++.o && g++ fasta.c++.o -o fasta.gpp_run
+        fi
+    fi
+    command="./${problems[$problem]}.gpp_run ${input[$problem]}"
+    echo $command
+    run
+    rm fasta.gpp_run
+done
+
+#Mandelbrot - C++
+problem=3
+ids=(2 3 5 6 8 9)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id.c++"
+    output_filename="allflags$all_flags.port$port.c++-$id.problem$problem.$count.csv"
+    if [ $all_flags ]
+    then
+        if [ $id -eq 6 ]
+        then
+            g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 -fopenmp -mno-fma --std=c++14 $file -o mandelbrot.c++.o && g++ mandelbrot.c++.o -o mandelbrot.gpp_run -fopenmp
+        elif [ $id -eq 8 ] || [ $id -eq 9 ]
+        then
+            g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 -fopenmp $file -o mandelbrot.c++.o && g++ mandelbrot.c++.o -o mandelbrot.gpp_run -fopenmp
+        else
+            g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3  $file -o mandelbrot.c++.o && g++ mandelbrot.c++.o -o mandelbrot.gpp_run
+        fi
+    else
+        g++ -c $file -o mandelbrot.c++.o && g++ mandelbrot.c++.o -o mandelbrot.gpp_run
+    fi
+    command="./${problems[$problem]}.gpp_run ${input[$problem]}"
+    echo $command
+    run
+    rm mandelbrot.gpp_run
+done
+
+#Nbody - C++
+problem=4
+ids=(1 3 4 5 6 7 8)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id.c++"
+    output_filename="allflags$all_flags.port$port.c++-$id.problem$problem.$count.csv"
+    if [ $all_flags ]
+    then
+        g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 $file -o nbody.c++.o && g++ nbody.c++.o -o nbody.gpp_run
+    else
+        if [ $id -eq 4 ]
+        then
+            g++ -c -march=native $file -o nbody.c++.o && g++ nbody.c++.o -o nbody.gpp_run
+        else
+            g++ -c $file -o nbody.c++.o && g++ nbody.c++.o -o nbody.gpp_run
+        fi
+    fi
+    command="./${problems[$problem]}.gpp_run ${input[$problem]}"
+    echo $command
+    run
+    rm nbody.gpp_run
+done
+
+#Revcomp - C++
+problem=5
+ids=(1 2 3 4 5)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id.c++"
+    output_filename="allflags$all_flags.port$port.c++-$id.problem$problem.$count.csv"
+    if [ $all_flags ]
+    then
+        if [ $id -eq 2 ]
+        then
+            g++ -c -pipe -O3 -fomit-frame-pointer -march=native -fopenmp $file -o revcomp.c++.o && g++ revcomp.c++.o -o revcomp.gpp_run -fopenmp
+        elif [ $id -eq 4 ]
+        then
+            g++ -c -pipe -O3 -fomit-frame-pointer -march=native -std=c++11 -mtune=native -mfpmath=sse -msse2 $file -o revcomp.c++.o && g++ revcomp.c++.o -o revcomp.gpp_run -pthread
+        else
+            g++ -c -pipe -O3 -fomit-frame-pointer -march=native $file -o revcomp.c++.o && g++ revcomp.c++.o -o revcomp.gpp_run
+        fi
+    else
+        if [ $id -eq 4 ]
+        then
+            g++ -c $file -o revcomp.c++.o && g++ revcomp.c++.o -o revcomp.gpp_run -pthread
+        else
+            g++ -c $file -o revcomp.c++.o && g++ revcomp.c++.o -o revcomp.gpp_run
+        fi
+    fi
+    command="./${problems[$problem]}.gpp_run ${input[$problem]}"
+    echo $command "<" $command2
+    run_rev
+    rm revcomp.gpp_run
+done
+
+#Spectralnorm - C++
+problem=6
+ids=(1 5 6 8)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id.c++"
+    output_filename="allflags$all_flags.port$port.c++-$id.problem$problem.$count.csv"
+    if [ $all_flags ]
+    then
+        if [ $id -eq 1 ]
+        then
+            g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3  $file -o spectralnorm.c++.o && g++ spectralnorm.c++.o -o spectralnorm.gpp_run
+        elif [ $id -eq 6 ]
+        then
+            g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 -fopenmp $file -o spectralnorm.c++.o && g++ spectralnorm.c++.o -o spectralnorm.gpp_run -fopenmp
+        else
+            g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 -fopenmp -O0 $file -o spectralnorm.c++.o && g++ spectralnorm.c++.o -o spectralnorm.gpp_run -fopenmp
+        fi
+    else
+        if [ $id -eq 1 ]
+        then
+            g++ -c $file -o spectralnorm.c++.o && g++ spectralnorm.c++.o -o spectralnorm.gpp_run
+        else
+            g++ -c -fopenmp $fle -o spectralnorm.c++.o && g++ spectralnorm.c++.o -o spectralnorm.gpp_run -fopenmp
+        fi
+    fi
+    command="./${problems[$problem]}.gpp_run ${input[$problem]}"
+    echo $command
+    $command
+#run
+    rm spectralnorm.gpp_run
+done
+END

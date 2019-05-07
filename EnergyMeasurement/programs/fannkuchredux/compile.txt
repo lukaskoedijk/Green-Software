@@ -36,7 +36,7 @@ C++:
   Compile:
     -(for 1)g++ -c -pipe -O3 -fomit-frame-pointer -march=native  -std=c++11 -pthread fannkuchredux.gpp.c++ -o fannkuchredux.c++.o && g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run -lpthread
     -(for 4)g++ -c -pipe -O3 -fomit-frame-pointer -march=native -pthread fannkuchredux.gpp-4.c++ -o fannkuchredux.c++.o && g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run -lpthread -lboost_thread -lboost_system
-    -(for 6,7)g++ -c -pipe -O3 -fomit-frame-pointer -march=native   fannkuchredux.gpp-7.c++ -o fannkuchredux.c++.o && g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run
+    -(for 6,7)g++ -c -pipe -O3 -fomit-frame-pointer -march=native fannkuchredux.gpp-7.c++ -o fannkuchredux.c++.o && g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run
   Compile no optimizations:
     -(for 1)g++ -c -pthread fannkuchredux.gpp.c++ -o fannkuchredux.c++.o && g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run -lpthread
     -(for 4)g++ -c fannkuchredux.gpp-4.c++ -o fannkuchredux.c++.o && g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run -lboost_thread
