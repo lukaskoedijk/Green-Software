@@ -22,7 +22,7 @@ C#:
 C:
   Compile:
     -(for 1,2,3,4,6)gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 nbody.gcc.c -o nbody.gcc_run -lm
-    -(for 5)gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native  nbody.gcc-5.c -o nbody.gcc_run
+    -(for 5)gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native nbody.gcc-5.c -o nbody.gcc_run
   Compile no optimizations:
     -(for 1,2,3,4,6)gcc nbody.gcc.c -o nbody.gcc_run -lm
     -(for 5)gcc -march=native nbody.gcc-5.c -o nbody.gcc_run

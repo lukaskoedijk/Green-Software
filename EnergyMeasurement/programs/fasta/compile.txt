@@ -21,7 +21,7 @@ C#:
 
 C:
   Compile:
-    -(for 1,4,5)gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native  fasta.c -o fasta.gcc_run
+    -(for 1,4,5)gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native fasta.c -o fasta.gcc_run
     -(for 2,6,7)gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -fopenmp fasta.gcc-2.c -o fasta.gcc_run
   Compile no optimizations:
     -(for 1,2,4,5,7)gcc fasta.gcc-4.c -o fasta.gcc_run

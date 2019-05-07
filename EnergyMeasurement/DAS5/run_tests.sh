@@ -589,7 +589,235 @@ do
     output_filename="port$port.yarv-$id.problem$problem.$count.csv"
     command="ruby -W0 $file ${input[$problem]}"
     echo $command
-    $command
-    #run
+    run
+done
+END
+
+all_flags=True
+: <<'END'
+#Binarytrees - C
+problem=0
+ids=(1 5)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id.c"
+    output_filename="allflags$all_flags.port$port.c-$id.problem$problem.$count.csv"
+    if [ $id -eq 1 ]
+    then
+        if [ $all_flags ]
+        then
+            gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native $file -o binarytrees.gcc_run -lm
+        else
+            gcc $file -o binarytrees.gcc_run -lm
+        fi
+    elif [ $id = 5 ]
+    then
+        if [ $all_flags ]
+        then
+            gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread $file -o binarytrees.gcc_run
+        else
+            gcc -pthread $file -o binarytrees.gcc_run
+        fi
+    fi
+    command="./${problems[$problem]}.gcc_run ${input[$problem]}"
+    echo $command
+    run
+    rm binarytrees.gcc_run
+done
+
+#Fannkuchredux - C
+problem=1
+ids=(1 2 3 4 5)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id.c"
+    output_filename="allflags$all_flags.port$port.c-$id.problem$problem.$count.csv"
+    if [ $all_flags ]
+    then
+        if [ $id -eq 1 ] || [ $id -eq 3 ] || [ $id -eq 4 ]
+        then
+            gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native  $file -o fannkuchredux.gcc_run
+        elif [ $id -eq 2 ]
+        then
+            gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread $file -o fannkuchredux.gcc_run
+        elif [ $id -eq 5 ]
+        then
+            gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -fopenmp $file -o fannkuchredux.gcc_run
+        fi
+    else
+        if [ $id -eq 1 ] || [ $id -eq 5 ]
+        then
+            gcc $file -o fannkuchredux.gcc_run
+        elif [ $id -eq 2 ]
+        then
+            gcc -O3 -pthread $file -o fannkuchredux.gcc_run
+        elif [ $id -eq 3 ]
+        then
+            gcc -O3 $file -o fannkuchredux.gcc_run
+        elif [ $id -eq 4 ]
+        then
+            gcc -O3 -march=native $file -o fannkuchredux.gcc_run
+        fi
+    fi
+    command="./${problems[$problem]}.gcc_run ${input[$problem]}"
+    echo $command
+    run
+    rm fannkuchredux.gcc_run
+done
+
+#Fasta - C
+problem=2
+ids=(1 2 4 5 6 7)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id.c"
+    output_filename="allflags$all_flags.port$port.c-$id.problem$problem.$count.csv"
+    if [ $all_flags ]
+    then
+        if [ $id -eq 1 ] || [ $id -eq 4 ] || [ $id -eq 5 ]
+        then
+            gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native $file -o fasta.gcc_run
+        elif [ $id -eq 2 ] || [ $id -eq 6 ] || [ $id -eq 7 ]
+        then
+            gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -fopenmp $file -o fasta.gcc_run
+        fi
+    else
+        if [ $id -eq 6 ]
+        then
+            gcc -O3 $file -o fasta.gcc_run
+        else
+            gcc $file -o fasta.gcc_run
+        fi
+    fi
+    command="./${problems[$problem]}.gcc_run ${input[$problem]}"
+    echo $command
+    run
+    rm fasta.gcc_run
+done
+
+#Mandelbrot - C
+problem=3
+ids=(1 2 3 6)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id.c"
+    output_filename="allflags$all_flags.port$port.c-$id.problem$problem.$count.csv"
+    if [ $id -eq 1 ] || [ $id -eq 3 ]
+    then
+        if [ $all_flags ]
+        then
+            gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread -lm $file -o mandelbrot.gcc_run
+        else
+            gcc -pthread -lm $file -o mandelbrot.gcc_run
+        fi
+    elif [ $id -eq 2 ]
+    then
+        if [ $all_flags ]
+        then
+            gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native $file -o mandelbrot.gcc_run
+        else
+            gcc $file -o mandelbrot.gcc_run
+        fi
+    elif [ $id -eq 6 ]
+    then
+        if [ $all_flags ]
+        then
+            gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -mno-fma -fno-finite-math-only -fopenmp $file -o mandelbrot.gcc_run
+        else
+            gcc -O3 $file -o mandelbrot.gcc_run
+        fi
+    fi
+    command="./${problems[$problem]}.gcc_run ${input[$problem]}"
+    echo $command
+    run
+    rm mandelbrot.gcc_run
+done
+
+#Nbody - C
+problem=4
+ids=(1 2 3 4 5 6)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id.c"
+    output_filename="allflags$all_flags.port$port.c-$id.problem$problem.$count.csv"
+    if [ $id -eq 5 ]
+    then
+        if [ $all_flags ]
+        then
+            gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native $file -o nbody.gcc_run
+        else
+            gcc -march=native $file -o nbody.gcc_run
+        fi
+    else
+        if [ $all_flags ]
+        then
+            gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 $file -o nbody.gcc_run -lm
+        else
+            gcc nbody.gcc.c -o nbody.gcc_run -lm
+        fi
+    fi
+    command="./${problems[$problem]}.gcc_run ${input[$problem]}"
+    echo $command
+    run
+    rm nbody.gcc_run
+done
+
+#Revcomp - C
+problem=5
+ids=(1 2 3 4 5 6)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id.c"
+    output_filename="allflags$all_flags.port$port.c-$id.problem$problem.$count.csv"
+    if [ $all_flags ]
+    then
+        if [ $id -eq 1 ] || [ $id -eq 2 ] || [ $id -eq 3 ]
+        then
+            gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread $file -o revcomp.gcc_run
+        elif [ $id -eq 4 ] || [ $id -eq 5 ]
+        then
+            gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native $file -o revcomp.gcc_run
+        else
+            gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -fopenmp $file -o revcomp.gcc_run
+        fi
+    else
+        if [ $id -eq 1 ] || [ $id -eq 2 ] || [ $id -eq 3 ]
+        then
+            gcc -pthread $file -o revcomp.gcc_run
+        else
+            gcc $file -o revcomp.gcc_run
+        fi
+    fi
+    command="./${problems[$problem]}.gcc_run ${input[$problem]}"
+    echo $command "<" $command2
+    run_rev
+    rm revcomp.gcc_run
+done
+
+#Spectralnorm - C
+problem=6
+ids=(1 3 4 5)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id.c"
+    output_filename="allflags$all_flags.port$port.c-$id.problem$problem.$count.csv"
+    if [ $all_flags ]
+    then
+        gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 -fopenmp $file -o spectralnorm.gcc_run -lm
+    else
+        if [ $id -eq 3 ] || [ $id -eq 5 ]
+        then
+            gcc -O3 $file -o spectralnorm.gcc_run -lm
+        elif [ $id -eq 4 ]
+        then
+            gcc -fopenmp $file -o spectralnorm.gcc_run -lm
+        else
+            gcc $file -o spectralnorm.gcc_run -lm
+        fi
+    fi
+    command="./${problems[$problem]}.gcc_run ${input[$problem]}"
+    echo $command
+    run
+    rm spectralnorm.gcc_run
 done
 END
