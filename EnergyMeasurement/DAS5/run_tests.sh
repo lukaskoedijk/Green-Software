@@ -342,7 +342,7 @@ do
     output_filename="port$port.php-$id.problem$problem.$count.csv"
     command="php -n $file ${input[$problem]}"
     echo $command
-    #run
+    run
 done
 
 #Fannkuchredux - PHP
@@ -354,7 +354,7 @@ do
     output_filename="port$port.php-$id.problem$problem.$count.csv"
     command="php -n $file ${input[$problem]}"
     echo $command
-    #run
+    run
 done
 
 #Fasta - PHP
@@ -366,7 +366,7 @@ do
     output_filename="port$port.php-$id.problem$problem.$count.csv"
     command="php -n $file ${input[$problem]}"
     echo $command
-    #run
+    run
 done
 
 #Mandelbrot - PHP
@@ -378,7 +378,7 @@ do
     output_filename="port$port.php-$id.problem$problem.$count.csv"
     command="php -n $file ${input[$problem]}"
     echo $command
-    #run
+    run
 done
 
 #Nbody - PHP
@@ -388,7 +388,7 @@ file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.php-$id.php"
 output_filename="port$port.php-$id.problem$problem.$count.csv"
 command="php -n $file ${input[$problem]}"
 echo $command
-#run
+run
 
 #Revcomp - PHP
 problem=5
@@ -399,7 +399,7 @@ do
     output_filename="port$port.php-$id.problem$problem.$count.csv"
     command="php -n $file ${input[$problem]}"
     echo $command "<" $command2
-    #run
+    run_rev
 done
 
 #Spectralnorm - PHP
@@ -411,6 +411,183 @@ do
     file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.php-$id.php"
     output_filename="port$port.php-$id.problem$problem.$count.csv"
     command="php -n $file ${input[$problem]}"
+    echo $command
+    run
+done
+END
+
+: <<'END'
+#Binarytrees - C#
+problem=0
+ids=(1 2 3 4)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.cs"
+    output_filename="port$port.cs-$id.problem$problem.$count.csv"
+    mcs $file
+    command="mono /home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe ${input[$problem]}"
+    echo $command
+    run
+done
+
+#Fannkuchredux - C#
+problem=1
+ids=(1 2 3 4 5 6)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.cs"
+    output_filename="port$port.cs-$id.problem$problem.$count.csv"
+    mcs $file
+    command="mono /home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe ${input[$problem]}"
+    echo $command
+    run
+done
+
+#Fasta - C#
+problem=2
+ids=(1 2 3 4)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.cs"
+    output_filename="port$port.cs-$id.problem$problem.$count.csv"
+    mcs $file
+    command="mono /home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe ${input[$problem]}"
+    echo $command
+    run
+done
+
+#Mandelbrot - C#
+problem=3
+ids=(1 2 3 4 5 6)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.cs"
+    output_filename="port$port.cs-$id.problem$problem.$count.csv"
+    mcs $file
+    command="mono /home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe ${input[$problem]}"
+    echo $command
+    run
+done
+
+#Nbody - C#
+problem=4
+ids=(1 2 3 4 5 6 8)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.cs"
+    output_filename="port$port.cs-$id.problem$problem.$count.csv"
+    mcs $file
+    command="mono /home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe ${input[$problem]}"
+    echo $command
+    run
+done
+
+#Revcomp - C#
+problem=5
+ids=(1 2 3 4 5 6)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.cs"
+    output_filename="port$port.cs-$id.problem$problem.$count.csv"
+    mcs $file
+    command="mono /home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe ${input[$problem]}"
+    echo $command "<" $command2
+    run_rev
+done
+
+#Spectralnorm - C#
+problem=6
+ids=(1 3)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.cs"
+    output_filename="port$port.cs-$id.problem$problem.$count.csv"
+    mcs $file
+    command="mono /home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe ${input[$problem]}"
+    echo $command
+    $command
+    run
+done
+END
+
+: <<'END'
+#Binarytrees - Ruby
+problem=0
+ids=(1 2 3 4)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
+    output_filename="port$port.yarv-$id.problem$problem.$count.csv"
+    command="ruby -W0 $file ${input[$problem]}"
+    echo $command
+    run
+done
+
+#Fannkuchredux - Ruby
+problem=1
+ids=(1 2)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
+    output_filename="port$port.yarv-$id.problem$problem.$count.csv"
+    command="ruby -W0 $file ${input[$problem]}"
+    echo $command
+    run
+done
+
+#Fannkuchredux - Ruby
+problem=2
+ids=(2 3 4 5 6)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
+    output_filename="port$port.yarv-$id.problem$problem.$count.csv"
+    command="ruby -W0 $file ${input[$problem]}"
+    echo $command
+    run
+done
+
+#Mandelbrot - Ruby
+problem=3
+ids=(1 2 3 6 7)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
+    output_filename="port$port.yarv-$id.problem$problem.$count.csv"
+    command="ruby -W0 $file ${input[$problem]}"
+    echo $command
+    run
+done
+
+#Nbody - Ruby
+problem=4
+id=2
+file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
+output_filename="port$port.yarv-$id.problem$problem.$count.csv"
+command="ruby -W0 $file ${input[$problem]}"
+echo $command
+run
+
+#Revcomp - Ruby
+problem=5
+ids=(2 3)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
+    output_filename="port$port.yarv-$id.problem$problem.$count.csv"
+    command="ruby -W0 $file ${input[$problem]}"
+    echo $command "<" $command2
+    run_rev
+done
+
+#Spectralnorm - Ruby
+problem=6
+ids=(1 4 5)
+for id in ${ids[*]}
+do
+    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
+    output_filename="port$port.yarv-$id.problem$problem.$count.csv"
+    command="ruby -W0 $file ${input[$problem]}"
     echo $command
     $command
     #run
