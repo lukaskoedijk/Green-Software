@@ -38,21 +38,17 @@ mib="/var/scratch/versto/Racktivity/ES-RACKTIVITY-MIB.txt"
 
 node=".1.$port"
 
-echo "Power(W), Current(A), Energy(kWH), Time(mS)" > $output
+echo "Power(W), TimePDU(S), TimeNODE(mS)" > $output
 while true
 do
 querry_time=$(date +"%s%3N")
-result=$(snmpwalk -v 1 -Cc -c public -t 9 -M .:/usr/share/snmp/mibs -m $mib $ip EPowerEntry)
+result=$(snmpwalk -v 1 -CE pStatePortCur -c public -t 9 -M .:/usr/share/snmp/mibs -m $mib $ip EPowerEntry)
 
 power=$(fgrep "pPower$node" <<< "$result")
 power_number=$(echo "$power" | grep -o -E '[0-9]+'| tail -1)
 
-current=$(fgrep "pCurrent$node" <<< "$result")
-current_number=$(echo "$current" | grep -o -E '[0-9]+'| tail -2 )
-current_number=$(echo -n "$current_number" | tr '\n' '.')
+timestamp=$(fgrep "pCurrentTime" <<< "$result")
+timestamp_number=$(echo "$timestamp" | grep -o -E '[0-9]+' | tail -6 | head -n 1)
 
-energy=$(fgrep "pActiveEnergy$node" <<< "$result")
-energy_number=$(echo "$energy" | grep -o -E '[0-9]+'| tail -2 )
-energy_number=$(echo -n "$energy_number" | tr '\n' '.')
-echo "$power_number, "$current_number", $energy_number, $querry_time" >> $output
+echo "$power_number, $timestamp_number, $querry_time" >> $output
 done
