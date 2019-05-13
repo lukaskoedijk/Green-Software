@@ -17,41 +17,51 @@ problems=(binarytrees fannkuchredux fasta mandelbrot nbody revcomp spectralnorm)
 #input_large=(21 12 25000000 16000 50000000 "0 < revcomp_large.txt" 5500)
 #input=(10 7 1000 200 1000 "0" 100) #change this one for the other output
 input=(21 12 25000000 16000 50000000 "0" 5500)
-command2="/home/lkoedijk/revcomp/revcomp_large.txt" #needs to be cahnged for large
+command2="/var/scratch/lkoedijk/revcomp/revcomp_large.txt" #needs to be cahnged for large
 
-measure_script="/home/lkoedijk/measure_continues.sh"
-kill_measurement="/home/lkoedijk/kill_script.sh"
-output_location_base="/home/lkoedijk/results/"
+port=5
+counts=1
+#(1 2 3 4 5) #ALWAYS CHANGE TO MAKE SURE NO DUPLICATE ID's
+measure_script="/home/lkoedijk/$port.measure_continues.sh"
+kill_measurement="/home/lkoedijk/$port.kill_script.sh"
+output_location_base="/var/scratch/lkoedijk/results/"
 output_filename="test.csv"
-port=3
-counts=(1 2) #ALWAYS CHANGE TO MAKE SURE NO DUPLICATE ID's
+
 
 run() {
-#sleep 10
+    sleep 10
     output_location="$output_location_base${problems[problem]}/$output_filename"
     ssh lkoedijk@fs0.das4.cs.vu.nl $kill_measurement
     ssh lkoedijk@fs0.das4.cs.vu.nl $measure_script -o $output_location -p $port &
     for ((n=0;n<$times;n++))
     do
-        $command
+        $command > /var/scratch/lkoedijk/output.txt
     done
     ssh lkoedijk@fs0.das4.cs.vu.nl $kill_measurement
 }
 
 run_rev() {
-    #sleep 10
+    sleep 10
     output_location="$output_location_base${problems[problem]}/$output_filename"
     ssh lkoedijk@fs0.das4.cs.vu.nl $kill_measurement
     ssh lkoedijk@fs0.das4.cs.vu.nl $measure_script -o $output_location -p $port &
     for ((n=0;n<$times;n++))
     do
-        $command < $command2
+        $command < $command2 > /var/scratch/lkoedijk/output.txt
     done
     ssh lkoedijk@fs0.das4.cs.vu.nl $kill_measurement
 }
 
 for count in ${counts[*]}
 do
+    : <<'END'
+    #idle power measure
+    output_location="/var/scratch/lkoedijk/results/idle/start.port$port.count$count.csv"
+    ssh lkoedijk@fs0.das4.cs.vu.nl $kill_measurement
+    ssh lkoedijk@fs0.das4.cs.vu.nl $measure_script -o $output_location -p $port &
+    sleep 1
+    ssh lkoedijk@fs0.das4.cs.vu.nl $kill_measurement
+
     #: <<'END'
     #Binarytrees - Java
     problem=0
@@ -59,15 +69,10 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.java-$id.java"
         output_filename="port$port.java-$id.problem$problem.$count.csv"
-        mv $file ${problems[$problem]}.java
-        javac -d . ${problems[$problem]}.java
-        command="java ${problems[$problem]} ${input[$problem]}"
+        command="java -cp /var/scratch/lkoedijk/${problems[$problem]}/java-$id ${problems[$problem]} ${input[$problem]}"
         echo $command
         run
-        mv ${problems[$problem]}.java $file
-        rm *.class
     done
 
     #Fannkuchredux - Java
@@ -76,15 +81,10 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.java-$id.java"
         output_filename="port$port.java-$id.problem$problem.$count.csv"
-        mv $file ${problems[$problem]}.java
-        javac -d . ${problems[$problem]}.java
-        command="java ${problems[$problem]} ${input[$problem]}"
+        command="java -cp /var/scratch/lkoedijk/${problems[$problem]}/java-$id ${problems[$problem]} ${input[$problem]}"
         echo $command
         run
-        mv ${problems[$problem]}.java $file
-        rm *.class
     done
 
     #Fasta - Java
@@ -98,15 +98,10 @@ do
         else
             times=2
         fi
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.java-$id.java"
         output_filename="port$port.java-$id.problem$problem.$count.csv"
-        mv $file ${problems[$problem]}.java
-        javac -d . ${problems[$problem]}.java
-        command="java ${problems[$problem]} ${input[$problem]}"
+        command="java -cp /var/scratch/lkoedijk/${problems[$problem]}/java-$id ${problems[$problem]} ${input[$problem]}"
         echo $command
         run
-        mv ${problems[$problem]}.java $file
-        rm *.class
     done
 
     #Mandelbrot - Java
@@ -120,15 +115,10 @@ do
         else
             times=1
         fi
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.java-$id.java"
         output_filename="port$port.java-$id.problem$problem.$count.csv"
-        mv $file ${problems[$problem]}.java
-        javac -d . ${problems[$problem]}.java
-        command="java ${problems[$problem]} ${input[$problem]}"
+        command="java -cp /var/scratch/lkoedijk/${problems[$problem]}/java-$id ${problems[$problem]} ${input[$problem]}"
         echo $command
         run
-        mv ${problems[$problem]}.java $file
-        rm *.class
     done
 
     #Nbody - Java
@@ -137,15 +127,10 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.java-$id.java"
         output_filename="port$port.java-$id.problem$problem.$count.csv"
-        mv $file ${problems[$problem]}.java
-        javac -d . ${problems[$problem]}.java
-        command="java ${problems[$problem]} ${input[$problem]}"
+        command="java -cp /var/scratch/lkoedijk/${problems[$problem]}/java-$id ${problems[$problem]} ${input[$problem]}"
         echo $command
         run
-        mv ${problems[$problem]}.java $file
-        rm *.class
     done
 
     #Revcomp - Java
@@ -154,15 +139,10 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.java-$id.java"
         output_filename="port$port.java-$id.problem$problem.$count.csv"
-        mv $file ${problems[$problem]}.java
-        javac -d . ${problems[$problem]}.java
-        command="java ${problems[$problem]} ${input[$problem]}"
+        command="java -cp /var/scratch/lkoedijk/${problems[$problem]}/java-$id ${problems[$problem]} ${input[$problem]}"
         echo $command "<" $command2
         run_rev
-        mv ${problems[$problem]}.java $file
-        rm *.class
     done
 
     #Spectralnorm - Java
@@ -176,15 +156,10 @@ do
         else
             times=2
         fi
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.java-$id.java"
         output_filename="port$port.java-$id.problem$problem.$count.csv"
-        mv $file ${problems[$problem]}.java
-        javac -d . ${problems[$problem]}.java
-        command="java ${problems[$problem]} ${input[$problem]}"
+        command="java -cp /var/scratch/lkoedijk/${problems[$problem]}/java-$id ${problems[$problem]} ${input[$problem]}"
         echo $command
         run
-        mv ${problems[$problem]}.java $file
-        rm *.class
     done
     #END
 
@@ -192,7 +167,7 @@ do
     #Binarytrees - JavaScript
     problem=0
     times=1
-    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.js"
+    file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.js"
     output_filename="port$port.javascript.problem$problem.$count.csv"
     command="node $file ${input[$problem]}"
     echo $command
@@ -204,10 +179,9 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.node-$id.node"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.node-$id.js"
         output_filename="port$port.javascript-$id.problem$problem.$count.csv"
-        cp -L $file ${problems[$problem]}.js
-        command="node ${problems[$problem]}.js ${input[$problem]}"
+        command="node $file ${input[$problem]}"
         echo $command
         run
     done
@@ -218,10 +192,9 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.node-$id.node"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.node-$id.js"
         output_filename="port$port.javascript-$id.problem$problem.$count.csv"
-        cp -L $file ${problems[$problem]}.js
-        command="node ${problems[$problem]}.js ${input[$problem]}"
+        command="node $file ${input[$problem]}"
         echo $command
         run
     done
@@ -229,7 +202,7 @@ do
     #Mandelbrot - JavaScript
     problem=3
     times=1
-    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.js"
+    file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.js"
     output_filename="port$port.javascript.problem$problem.$count.csv"
     command="node $file ${input[$problem]}"
     echo $command
@@ -241,10 +214,9 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.node-$id.node"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.node-$id.js"
         output_filename="port$port.javascript-$id.problem$problem.$count.csv"
-        cp -L $file ${problems[$problem]}.js
-        command="node ${problems[$problem]}.js ${input[$problem]}"
+        command="node $file ${input[$problem]}"
         echo $command
         run
     done
@@ -255,10 +227,9 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.node-$id.node"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.node-$id.js"
         output_filename="port$port.javascript-$id.problem$problem.$count.csv"
-        cp -L $file ${problems[$problem]}.js
-        command="node ${problems[$problem]}.js ${input[$problem]}"
+        command="node $file ${input[$problem]}"
         echo $command "<" $command2
         run_rev
     done
@@ -269,10 +240,9 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.node-$id.node"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.node-$id.js"
         output_filename="port$port.javascript-$id.problem$problem.$count.csv"
-        cp -L $file ${problems[$problem]}.js
-        command="node ${problems[$problem]}.js ${input[$problem]}"
+        command="node $file ${input[$problem]}"
         echo $command
         run
     done
@@ -285,7 +255,7 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.python3-$id.py"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.python3-$id.py"
         output_filename="port$port.python3-$id.problem$problem.$count.csv"
         command="python3 $file ${input[$problem]}"
         echo $command
@@ -299,7 +269,7 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.python3-$id.py"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.python3-$id.py"
         output_filename="port$port.python3-$id.problem$problem.$count.csv"
         command="python3 $file ${input[$problem]}"
         echo $command
@@ -313,7 +283,7 @@ do
     #5 different output
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.python3-$id.py"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.python3-$id.py"
         output_filename="port$port.python3-$id.problem$problem.$count.csv"
         command="python3 $file ${input[$problem]}"
         echo $command
@@ -327,7 +297,7 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.python3-$id.py"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.python3-$id.py"
         output_filename="port$port.python3-$id.problem$problem.$count.csv"
         command="python3 $file ${input[$problem]}"
         echo $command
@@ -340,7 +310,7 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.python3-$id.py"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.python3-$id.py"
         output_filename="port$port.python3-$id.problem$problem.$count.csv"
         command="python3 $file ${input[$problem]}"
         echo $command
@@ -353,11 +323,10 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.python3-$id.py"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.python3-$id.py"
         output_filename="port$port.python3-$id.problem$problem.$count.csv"
         command="python3 $file ${input[$problem]}"
         echo $command "<" $command2
-        $command < $command2
         run_rev
     done
 
@@ -367,7 +336,7 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.python3-$id.py"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.python3-$id.py"
         output_filename="port$port.python3-$id.problem$problem.$count.csv"
         command="python3 $file ${input[$problem]}"
         echo $command
@@ -382,7 +351,7 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.php-$id.php"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.php-$id.php"
         output_filename="port$port.php-$id.problem$problem.$count.csv"
         command="php -n $file ${input[$problem]}"
         echo $command
@@ -395,7 +364,7 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.php-$id.php"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.php-$id.php"
         output_filename="port$port.php-$id.problem$problem.$count.csv"
         command="php -n $file ${input[$problem]}"
         echo $command
@@ -408,7 +377,7 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.php-$id.php"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.php-$id.php"
         output_filename="port$port.php-$id.problem$problem.$count.csv"
         command="php -n $file ${input[$problem]}"
         echo $command
@@ -421,7 +390,7 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.php-$id.php"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.php-$id.php"
         output_filename="port$port.php-$id.problem$problem.$count.csv"
         command="php -n $file ${input[$problem]}"
         echo $command
@@ -432,7 +401,7 @@ do
     problem=4
     id=3
     times=1
-    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.php-$id.php"
+    file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.php-$id.php"
     output_filename="port$port.php-$id.problem$problem.$count.csv"
     command="php -n $file ${input[$problem]}"
     echo $command
@@ -444,7 +413,7 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.php-$id.php"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.php-$id.php"
         output_filename="port$port.php-$id.problem$problem.$count.csv"
         command="php -n $file ${input[$problem]}"
         echo $command "<" $command2
@@ -458,7 +427,7 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.php-$id.php"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.php-$id.php"
         output_filename="port$port.php-$id.problem$problem.$count.csv"
         command="php -n $file ${input[$problem]}"
         echo $command
@@ -473,10 +442,9 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.cs"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe"
         output_filename="port$port.cs-$id.problem$problem.$count.csv"
-        mcs $file
-        command="mono /home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe ${input[$problem]}"
+        command="mono $file ${input[$problem]}"
         echo $command
         run
     done
@@ -487,10 +455,9 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.cs"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe"
         output_filename="port$port.cs-$id.problem$problem.$count.csv"
-        mcs $file
-        command="mono /home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe ${input[$problem]}"
+        command="mono $file ${input[$problem]}"
         echo $command
         run
     done
@@ -506,10 +473,9 @@ do
         else
             times=3
         fi
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.cs"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe"
         output_filename="port$port.cs-$id.problem$problem.$count.csv"
-        mcs $file
-        command="mono /home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe ${input[$problem]}"
+        command="mono $file ${input[$problem]}"
         echo $command
         run
     done
@@ -525,10 +491,9 @@ do
         else
             times=1
         fi
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.cs"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe"
         output_filename="port$port.cs-$id.problem$problem.$count.csv"
-        mcs $file
-        command="mono /home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe ${input[$problem]}"
+        command="mono $file ${input[$problem]}"
         echo $command
         run
     done
@@ -539,10 +504,9 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.cs"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe"
         output_filename="port$port.cs-$id.problem$problem.$count.csv"
-        mcs $file
-        command="mono /home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe ${input[$problem]}"
+        command="mono $file ${input[$problem]}"
         echo $command
         run
     done
@@ -553,10 +517,9 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.cs"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe"
         output_filename="port$port.cs-$id.problem$problem.$count.csv"
-        mcs $file
-        command="mono /home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe ${input[$problem]}"
+        command="mono $file ${input[$problem]}"
         echo $command "<" $command2
         run_rev
     done
@@ -572,12 +535,10 @@ do
         else
             times=2
         fi
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.cs"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe"
         output_filename="port$port.cs-$id.problem$problem.$count.csv"
-        mcs $file
-        command="mono /home/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe ${input[$problem]}"
+        command="mono $file ${input[$problem]}"
         echo $command
-        $command
         run
     done
     #END
@@ -589,7 +550,7 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
         output_filename="port$port.yarv-$id.problem$problem.$count.csv"
         command="ruby -W0 $file ${input[$problem]}"
         echo $command
@@ -602,7 +563,7 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
         output_filename="port$port.yarv-$id.problem$problem.$count.csv"
         command="ruby -W0 $file ${input[$problem]}"
         echo $command
@@ -615,7 +576,7 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
         output_filename="port$port.yarv-$id.problem$problem.$count.csv"
         command="ruby -W0 $file ${input[$problem]}"
         echo $command
@@ -628,7 +589,7 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
         output_filename="port$port.yarv-$id.problem$problem.$count.csv"
         command="ruby -W0 $file ${input[$problem]}"
         echo $command
@@ -639,7 +600,7 @@ do
     problem=4
     id=2
     times=1
-    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
+    file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
     output_filename="port$port.yarv-$id.problem$problem.$count.csv"
     command="ruby -W0 $file ${input[$problem]}"
     echo $command
@@ -651,7 +612,7 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
         output_filename="port$port.yarv-$id.problem$problem.$count.csv"
         command="ruby -W0 $file ${input[$problem]}"
         echo $command "<" $command2
@@ -664,7 +625,7 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
         output_filename="port$port.yarv-$id.problem$problem.$count.csv"
         command="ruby -W0 $file ${input[$problem]}"
         echo $command
@@ -672,7 +633,6 @@ do
     done
     #END
 
-    all_flags=True
     #: <<'END'
     #Binarytrees - C
     problem=0
@@ -680,29 +640,16 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id.c"
-        output_filename="allflags$all_flags.port$port.c-$id.problem$problem.$count.csv"
-        if [ $id -eq 1 ]
-        then
-            if [ $all_flags ]
-            then
-                gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native $file -o binarytrees.gcc_run -lm
-            else
-                gcc $file -o binarytrees.gcc_run -lm
-            fi
-        elif [ $id = 5 ]
-        then
-            if [ $all_flags ]
-            then
-                gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread $file -o binarytrees.gcc_run
-            else
-                gcc -pthread $file -o binarytrees.gcc_run
-            fi
-        fi
-        command="./${problems[$problem]}.gcc_run ${input[$problem]}"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
+        output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
         echo $command
         run
-        rm binarytrees.gcc_run
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
+        output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
+        echo $command
+        run
     done
 
     #Fannkuchredux - C
@@ -711,39 +658,16 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id.c"
-        output_filename="allflags$all_flags.port$port.c-$id.problem$problem.$count.csv"
-        if [ $all_flags ]
-        then
-            if [ $id -eq 1 ] || [ $id -eq 3 ] || [ $id -eq 4 ]
-            then
-                gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native  $file -o fannkuchredux.gcc_run
-            elif [ $id -eq 2 ]
-            then
-                gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread $file -o fannkuchredux.gcc_run
-            elif [ $id -eq 5 ]
-            then
-                gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -fopenmp $file -o fannkuchredux.gcc_run
-            fi
-        else
-            if [ $id -eq 1 ] || [ $id -eq 5 ]
-            then
-                gcc $file -o fannkuchredux.gcc_run
-            elif [ $id -eq 2 ]
-            then
-                gcc -O3 -pthread $file -o fannkuchredux.gcc_run
-            elif [ $id -eq 3 ]
-            then
-                gcc -O3 $file -o fannkuchredux.gcc_run
-            elif [ $id -eq 4 ]
-            then
-                gcc -O3 -march=native $file -o fannkuchredux.gcc_run
-            fi
-        fi
-        command="./${problems[$problem]}.gcc_run ${input[$problem]}"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
+        output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
         echo $command
         run
-        rm fannkuchredux.gcc_run
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
+        output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
+        echo $command
+        run
     done
 
     #Fasta - C
@@ -757,35 +681,24 @@ do
         elif [ $id -eq 2 ] || [ $id -eq 7 ]
         then
             times=6
-        elif [ $id -eq 6]
+        elif [ $id -eq 6 ]
         then
             times=4
         else
             times=2
         fi
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id.c"
-        output_filename="allflags$all_flags.port$port.c-$id.problem$problem.$count.csv"
-        if [ $all_flags ]
-        then
-            if [ $id -eq 1 ] || [ $id -eq 4 ] || [ $id -eq 5 ]
-            then
-                gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native $file -o fasta.gcc_run
-            elif [ $id -eq 2 ] || [ $id -eq 6 ] || [ $id -eq 7 ]
-            then
-                gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -fopenmp $file -o fasta.gcc_run
-            fi
-        else
-            if [ $id -eq 6 ]
-            then
-                gcc -O3 $file -o fasta.gcc_run
-            else
-                gcc $file -o fasta.gcc_run
-            fi
-        fi
-        command="./${problems[$problem]}.gcc_run ${input[$problem]}"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
+        output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
         echo $command
         run
-        rm fasta.gcc_run
+
+        times=1
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
+        output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
+        echo $command
+        run
     done
 
     #Mandelbrot - C
@@ -802,37 +715,23 @@ do
         else
             times=2
         fi
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id.c"
-        output_filename="allflags$all_flags.port$port.c-$id.problem$problem.$count.csv"
-        if [ $id -eq 1 ] || [ $id -eq 3 ]
-        then
-            if [ $all_flags ]
-            then
-                gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread -lm $file -o mandelbrot.gcc_run
-            else
-                gcc -pthread -lm $file -o mandelbrot.gcc_run
-            fi
-        elif [ $id -eq 2 ]
-        then
-            if [ $all_flags ]
-            then
-                gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native $file -o mandelbrot.gcc_run
-            else
-                gcc $file -o mandelbrot.gcc_run
-            fi
-        elif [ $id -eq 6 ]
-        then
-            if [ $all_flags ]
-            then
-                gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -mno-fma -fno-finite-math-only -fopenmp $file -o mandelbrot.gcc_run
-            else
-                gcc -O3 $file -o mandelbrot.gcc_run
-            fi
-        fi
-        command="./${problems[$problem]}.gcc_run ${input[$problem]}"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
+        output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
         echo $command
         run
-        rm mandelbrot.gcc_run
+
+        if [ $id -eq 1 ]
+        then
+            times=2
+        else
+            times=1
+        fi
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
+        output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
+        echo $command
+        run
     done
 
     #Nbody - C
@@ -841,28 +740,16 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id.c"
-        output_filename="allflags$all_flags.port$port.c-$id.problem$problem.$count.csv"
-        if [ $id -eq 5 ]
-        then
-            if [ $all_flags ]
-            then
-                gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native $file -o nbody.gcc_run
-            else
-                gcc -march=native $file -o nbody.gcc_run
-            fi
-        else
-            if [ $all_flags ]
-            then
-                gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 $file -o nbody.gcc_run -lm
-            else
-                gcc nbody.gcc.c -o nbody.gcc_run -lm
-            fi
-        fi
-        command="./${problems[$problem]}.gcc_run ${input[$problem]}"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
+        output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
         echo $command
         run
-        rm nbody.gcc_run
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
+        output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
+        echo $command
+        run
     done
 
     #Revcomp - C
@@ -871,31 +758,16 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id.c"
-        output_filename="allflags$all_flags.port$port.c-$id.problem$problem.$count.csv"
-        if [ $all_flags ]
-        then
-            if [ $id -eq 1 ] || [ $id -eq 2 ] || [ $id -eq 3 ]
-            then
-                gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -pthread $file -o revcomp.gcc_run
-            elif [ $id -eq 4 ] || [ $id -eq 5 ]
-            then
-                gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native $file -o revcomp.gcc_run
-            else
-                gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -fopenmp $file -o revcomp.gcc_run
-            fi
-        else
-            if [ $id -eq 1 ] || [ $id -eq 2 ] || [ $id -eq 3 ]
-            then
-                gcc -pthread $file -o revcomp.gcc_run
-            else
-                gcc $file -o revcomp.gcc_run
-            fi
-        fi
-        command="./${problems[$problem]}.gcc_run ${input[$problem]}"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
+        output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
         echo $command "<" $command2
         run_rev
-        rm revcomp.gcc_run
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
+        output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
+        echo $command "<" $command2
+        run_rev
     done
 
     #Spectralnorm - C
@@ -912,47 +784,47 @@ do
         else
             times=4
         fi
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id.c"
-        output_filename="allflags$all_flags.port$port.c-$id.problem$problem.$count.csv"
-        if [ $all_flags ]
-        then
-            gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 -fopenmp $file -o spectralnorm.gcc_run -lm
-        else
-            if [ $id -eq 3 ] || [ $id -eq 5 ]
-            then
-                gcc -O3 $file -o spectralnorm.gcc_run -lm
-            elif [ $id -eq 4 ]
-            then
-                gcc -fopenmp $file -o spectralnorm.gcc_run -lm
-            else
-                gcc $file -o spectralnorm.gcc_run -lm
-            fi
-        fi
-        command="./${problems[$problem]}.gcc_run ${input[$problem]}"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
+        output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
         echo $command
         run
-        rm spectralnorm.gcc_run
+
+        if [ $id -eq 4 ]
+        then
+            times=4
+        else
+            times=1
+        fi
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
+        output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
+        echo $command
+        run
     done
     #END
 
     #: <<'END'
     #Binarytrees - C++
     problem=0
-    id=8
+    ids=(1 3 8)
     #2 and 6 negative output
     times=2
-    file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id.c++"
-    output_filename="allflags$all_flags.port$port.c++-$id.problem$problem.$count.csv"
-    if [ $all_flags ]
-    then
-        g++ -c -pipe -O3 -fomit-frame-pointer -march=native -fopenmp $file -o binarytrees.c++.o && g++ binarytrees.c++.o -o binarytrees.gpp_run -fopenmp -lboost_system
-    else
-        g++ -c $file -o binarytrees.c++.o && g++ binarytrees.c++.o -o binarytrees.gpp_run -lboost_system
-    fi
-    command="./${problems[$problem]}.gpp_run ${input[$problem]}"
-    echo $command
-    run
-    rm binarytrees.gpp_run
+    for id in ${ids[*]}
+    do
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
+        output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
+        echo $command
+        run
+
+        times=1
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
+        output_filename="noflags.port$port.c++-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
+        echo $command
+        run
+    done
 
     #Fannkuchredux - C++
     problem=1
@@ -960,41 +832,21 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id.c++"
-        output_filename="allflags$all_flags.port$port.c++-$id.problem$problem.$count.csv"
-        if [ $id -eq 6 ] || [ $id -eq 7 ]
-        then
-            if [ $all_flags ]
-            then
-                g++ -c -pipe -O3 -fomit-frame-pointer -march=native $file -o fannkuchredux.c++.o && g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run
-            else
-                g++ -c -march=native $file -o fannkuchredux.c++.o && g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run
-            fi
-        elif [ $id -eq 1 ]
-        then
-            if [ $all_flags ]
-            then
-                g++ -c -pipe -O3 -fomit-frame-pointer -march=native -std=c++11 -pthread $file -o fannkuchredux.c++.o && g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run -lpthread
-            else
-                g++ -c -pthread $file -o fannkuchredux.c++.o && g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run -lpthread
-            fi
-        else
-            if [ $all_flags ]
-            then
-                g++ -c -pipe -O3 -fomit-frame-pointer -march=native -pthread $file -o fannkuchredux.c++.o && g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run -lpthread -lboost_thread -lboost_system
-            else
-                g++ -c $file -o fannkuchredux.c++.o && g++ fannkuchredux.c++.o -o fannkuchredux.gpp_run -lboost_thread
-            fi
-        fi
-        command="./${problems[$problem]}.gpp_run ${input[$problem]}"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
+        output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
         echo $command
         run
-        rm fannkuchredux.gpp_run
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
+        output_filename="noflags.port$port.c++-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
+        echo $command
+        run
     done
 
     #Fasta - C++
     problem=2
-    ids=(1 2 3 4 5 6)
+    ids=(1 2 3 4 6)
     for id in ${ids[*]}
     do
         if [ $id -eq 5 ] || [ $id -eq 6 ]
@@ -1003,28 +855,18 @@ do
         else
             times=2
         fi
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id.c++"
-        output_filename="allflags$all_flags.port$port.c++-$id.problem$problem.$count.csv"
-        if [ $id -eq 5 ] || [ $id -eq 6 ]
-        then
-            if [ $all_flags ]
-            then
-                g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 -std=c++11 $file -o fasta.c++.o && g++ fasta.c++.o -o fasta.gpp_run -lpthread
-            else
-                g++ -c $file -o fasta.c++.o && g++ fasta.c++.o -o fasta.gpp_run -lpthread
-            fi
-        else
-            if [ $all_flags ]
-            then
-                g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 $file -o fasta.c++.o && g++ fasta.c++.o -o fasta.gpp_run
-            else
-                g++ -c $file -o fasta.c++.o && g++ fasta.c++.o -o fasta.gpp_run
-            fi
-        fi
-        command="./${problems[$problem]}.gpp_run ${input[$problem]}"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
+        output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
         echo $command
         run
-        rm fasta.gpp_run
+
+        times=1
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
+        output_filename="noflags.port$port.c++-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
+        echo $command
+        run
     done
 
     #Mandelbrot - C++
@@ -1041,51 +883,36 @@ do
         else
             times=1
         fi
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id.c++"
-        output_filename="allflags$all_flags.port$port.c++-$id.problem$problem.$count.csv"
-        if [ $all_flags ]
-        then
-            if [ $id -eq 6 ]
-            then
-                g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 -fopenmp -mno-fma --std=c++14 $file -o mandelbrot.c++.o && g++ mandelbrot.c++.o -o mandelbrot.gpp_run -fopenmp
-            elif [ $id -eq 8 ] || [ $id -eq 9 ]
-            then
-                g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 -fopenmp $file -o mandelbrot.c++.o && g++ mandelbrot.c++.o -o mandelbrot.gpp_run -fopenmp
-            else
-                g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3  $file -o mandelbrot.c++.o && g++ mandelbrot.c++.o -o mandelbrot.gpp_run
-            fi
-        else
-            g++ -c $file -o mandelbrot.c++.o && g++ mandelbrot.c++.o -o mandelbrot.gpp_run
-        fi
-        command="./${problems[$problem]}.gpp_run ${input[$problem]}"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
+        output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
         echo $command
         run
-        rm mandelbrot.gpp_run
-    done
 
+        times=1
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
+        output_filename="noflags.port$port.c++-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
+        echo $command
+        run
+    done
+END
     #Nbody - C++
     problem=4
     ids=(1 3 4 5 6 7 8)
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id.c++"
-        output_filename="allflags$all_flags.port$port.c++-$id.problem$problem.$count.csv"
-        if [ $all_flags ]
-        then
-            g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 $file -o nbody.c++.o && g++ nbody.c++.o -o nbody.gpp_run
-        else
-            if [ $id -eq 4 ]
-            then
-                g++ -c -march=native $file -o nbody.c++.o && g++ nbody.c++.o -o nbody.gpp_run
-            else
-                g++ -c $file -o nbody.c++.o && g++ nbody.c++.o -o nbody.gpp_run
-            fi
-        fi
-        command="./${problems[$problem]}.gpp_run ${input[$problem]}"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
+        output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
         echo $command
         run
-        rm nbody.gpp_run
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
+        output_filename="noflags.port$port.c++-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
+        echo $command
+        run
     done
 
     #Revcomp - C++
@@ -1094,31 +921,16 @@ do
     times=1
     for id in ${ids[*]}
     do
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id.c++"
-        output_filename="allflags$all_flags.port$port.c++-$id.problem$problem.$count.csv"
-        if [ $all_flags ]
-        then
-            if [ $id -eq 2 ]
-            then
-                g++ -c -pipe -O3 -fomit-frame-pointer -march=native -fopenmp $file -o revcomp.c++.o && g++ revcomp.c++.o -o revcomp.gpp_run -fopenmp
-            elif [ $id -eq 4 ]
-            then
-                g++ -c -pipe -O3 -fomit-frame-pointer -march=native -std=c++11 -mtune=native -mfpmath=sse -msse2 $file -o revcomp.c++.o && g++ revcomp.c++.o -o revcomp.gpp_run -pthread
-            else
-                g++ -c -pipe -O3 -fomit-frame-pointer -march=native $file -o revcomp.c++.o && g++ revcomp.c++.o -o revcomp.gpp_run
-            fi
-        else
-            if [ $id -eq 4 ]
-            then
-                g++ -c $file -o revcomp.c++.o && g++ revcomp.c++.o -o revcomp.gpp_run -pthread
-            else
-                g++ -c $file -o revcomp.c++.o && g++ revcomp.c++.o -o revcomp.gpp_run
-            fi
-        fi
-        command="./${problems[$problem]}.gpp_run ${input[$problem]}"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
+        output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
         echo $command "<" $command2
         run_rev
-        rm revcomp.gpp_run
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
+        output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
+        echo $command "<" $command2
+        run_rev
     done
 
     #Spectralnorm - C++
@@ -1128,38 +940,36 @@ do
     do
         if [ $id -eq 1 ]
         then
-            times=1
+            times=2
         elif [ $id -eq 8 ]
         then
-            times=3
+            times=7
         else
-            times=4
+            times=8
         fi
-        file="/home/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id.c++"
-        output_filename="allflags$all_flags.port$port.c++-$id.problem$problem.$count.csv"
-        if [ $all_flags ]
-        then
-            if [ $id -eq 1 ]
-            then
-                g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3  $file -o spectralnorm.c++.o && g++ spectralnorm.c++.o -o spectralnorm.gpp_run
-            elif [ $id -eq 6 ]
-            then
-                g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 -fopenmp $file -o spectralnorm.c++.o && g++ spectralnorm.c++.o -o spectralnorm.gpp_run -fopenmp
-            else
-                g++ -c -pipe -O3 -fomit-frame-pointer -march=native -mfpmath=sse -msse3 -fopenmp -O0 $file -o spectralnorm.c++.o && g++ spectralnorm.c++.o -o spectralnorm.gpp_run -fopenmp
-            fi
-        else
-            if [ $id -eq 1 ]
-            then
-                g++ -c $file -o spectralnorm.c++.o && g++ spectralnorm.c++.o -o spectralnorm.gpp_run
-            else
-                g++ -c -fopenmp $fle -o spectralnorm.c++.o && g++ spectralnorm.c++.o -o spectralnorm.gpp_run -fopenmp
-            fi
-        fi
-        command="./${problems[$problem]}.gpp_run ${input[$problem]}"
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
+        output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
         echo $command
         run
-        rm spectralnorm.gpp_run
+
+        if [ $id -eq 1 ]
+        then
+            times=1
+        fi
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
+        output_filename="noflags.port$port.c++-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
+        echo $command
+        run
     done
-    #END
+    : <<'END'
+    #idle power measure
+    output_location="/var/scratch/lkoedijk/results/idle/end.port$port.count$count.csv"
+    ssh lkoedijk@fs0.das4.cs.vu.nl $kill_measurement
+    ssh lkoedijk@fs0.das4.cs.vu.nl $measure_script -o $output_location -p $port &
+    sleep 60
+    ssh lkoedijk@fs0.das4.cs.vu.nl $kill_measurement
+END
 done
+
