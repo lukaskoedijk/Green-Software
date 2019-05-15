@@ -14,10 +14,10 @@ if (d % 8 != 0) {
   console.error('d must be multiple of 8');
   process.exit(-1);
 }
-if (d * d / numCPUs % 8 != 0) {
-  console.error('cannot distribute equal across cpus');
-  process.exit(-1);
-}
+//if (d * d / numCPUs % 8 != 0) {
+//  console.error('cannot distribute equal across cpus');
+//  process.exit(-1);
+//}
 
 if (cluster.isMaster) {
   var alive = numCPUs;

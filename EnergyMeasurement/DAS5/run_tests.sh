@@ -19,8 +19,8 @@ problems=(binarytrees fannkuchredux fasta mandelbrot nbody revcomp spectralnorm)
 input=(21 12 25000000 16000 50000000 "0" 5500)
 command2="/var/scratch/lkoedijk/revcomp/revcomp_large.txt" #needs to be cahnged for large
 
-port=5
-counts=1
+port=3
+counts=(2 3)
 #(1 2 3 4 5) #ALWAYS CHANGE TO MAKE SURE NO DUPLICATE ID's
 measure_script="/home/lkoedijk/$port.measure_continues.sh"
 kill_measurement="/home/lkoedijk/$port.kill_script.sh"
@@ -54,21 +54,29 @@ run_rev() {
 
 for count in ${counts[*]}
 do
-    : <<'END'
     #idle power measure
+    sleep 10
     output_location="/var/scratch/lkoedijk/results/idle/start.port$port.count$count.csv"
     ssh lkoedijk@fs0.das4.cs.vu.nl $kill_measurement
     ssh lkoedijk@fs0.das4.cs.vu.nl $measure_script -o $output_location -p $port &
-    sleep 1
+    sleep 60
     ssh lkoedijk@fs0.das4.cs.vu.nl $kill_measurement
 
     #: <<'END'
     #Binarytrees - Java
     problem=0
     ids=(2 3 4 6 7)
-    times=1
     for id in ${ids[*]}
     do
+        if [ $id -eq 7 ]
+        then
+            times=5
+        elif [ $id -eq 4 ]
+        then
+            times=3
+        else
+            times=2
+        fi
         output_filename="port$port.java-$id.problem$problem.$count.csv"
         command="java -cp /var/scratch/lkoedijk/${problems[$problem]}/java-$id ${problems[$problem]} ${input[$problem]}"
         echo $command
@@ -78,9 +86,17 @@ do
     #Fannkuchredux - Java
     problem=1
     ids=(1 2 3)
-    times=1
     for id in ${ids[*]}
     do
+        if [ $id -eq 2 ]
+        then
+            times=1
+        elif [ $id -eq 1 ]
+        then
+            times=4
+        else
+            times=5
+        fi
         output_filename="port$port.java-$id.problem$problem.$count.csv"
         command="java -cp /var/scratch/lkoedijk/${problems[$problem]}/java-$id ${problems[$problem]} ${input[$problem]}"
         echo $command
@@ -90,14 +106,9 @@ do
     #Fasta - Java
     problem=2
     ids=(2 4)
+    times=2
     for id in ${ids[*]}
     do
-        if [ $id -eq 2 ]
-        then
-            times=1
-        else
-            times=2
-        fi
         output_filename="port$port.java-$id.problem$problem.$count.csv"
         command="java -cp /var/scratch/lkoedijk/${problems[$problem]}/java-$id ${problems[$problem]} ${input[$problem]}"
         echo $command
@@ -107,14 +118,9 @@ do
     #Mandelbrot - Java
     problem=3
     ids=(1 2 3 4 6)
+    times=8
     for id in ${ids[*]}
     do
-        if [ $id -eq 2 ]
-        then
-            times=2
-        else
-            times=1
-        fi
         output_filename="port$port.java-$id.problem$problem.$count.csv"
         command="java -cp /var/scratch/lkoedijk/${problems[$problem]}/java-$id ${problems[$problem]} ${input[$problem]}"
         echo $command
@@ -124,7 +130,7 @@ do
     #Nbody - Java
     problem=4
     ids=(1 2 3 4 5)
-    times=1
+    times=2
     for id in ${ids[*]}
     do
         output_filename="port$port.java-$id.problem$problem.$count.csv"
@@ -136,7 +142,7 @@ do
     #Revcomp - Java
     problem=5
     ids=(3 4 5 6 8)
-    times=1
+    times=8
     for id in ${ids[*]}
     do
         output_filename="port$port.java-$id.problem$problem.$count.csv"
@@ -154,7 +160,7 @@ do
         then
             times=1
         else
-            times=2
+            times=5
         fi
         output_filename="port$port.java-$id.problem$problem.$count.csv"
         command="java -cp /var/scratch/lkoedijk/${problems[$problem]}/java-$id ${problems[$problem]} ${input[$problem]}"
@@ -200,13 +206,13 @@ do
     done
 
     #Mandelbrot - JavaScript
-    problem=3
-    times=1
-    file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.js"
-    output_filename="port$port.javascript.problem$problem.$count.csv"
-    command="node $file ${input[$problem]}"
-    echo $command
-    run
+#    problem=3
+#    times=3
+#    file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.js"
+#    output_filename="port$port.javascript.problem$problem.$count.csv"
+#    command="node $file ${input[$problem]}"
+#    echo $command
+#    run
 
     #Nbody - JavaScript
     problem=4
@@ -224,9 +230,14 @@ do
     #Revcomp - JavaScript
     problem=5
     ids=(2 7)
-    times=1
     for id in ${ids[*]}
     do
+        if [ $id -eq 2 ]
+        then
+            times=2
+        else
+            times=3
+        fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.node-$id.js"
         output_filename="port$port.javascript-$id.problem$problem.$count.csv"
         command="node $file ${input[$problem]}"
@@ -237,7 +248,7 @@ do
     #Spectralnorm - JavaScript
     problem=6
     ids=(1 2 3 5)
-    times=1
+    times=2
     for id in ${ids[*]}
     do
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.node-$id.js"
@@ -320,7 +331,7 @@ do
     #Revcomp - Python3
     problem=5
     ids=(4 6)
-    times=1
+    times=3
     for id in ${ids[*]}
     do
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.python3-$id.py"
@@ -353,7 +364,7 @@ do
     do
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.php-$id.php"
         output_filename="port$port.php-$id.problem$problem.$count.csv"
-        command="php -n $file ${input[$problem]}"
+        command="php -n -d memory_limit=4096M $file ${input[$problem]}"
         echo $command
         run
     done
@@ -410,9 +421,14 @@ do
     #Revcomp - PHP
     problem=5
     ids=(1 2 3)
-    times=1
     for id in ${ids[*]}
     do
+        if [ $id -eq 3 ]
+        then
+            times=7
+        else
+            times=14
+        fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.php-$id.php"
         output_filename="port$port.php-$id.problem$problem.$count.csv"
         command="php -n $file ${input[$problem]}"
@@ -455,6 +471,12 @@ do
     times=1
     for id in ${ids[*]}
     do
+        if [ $id -eq 1 ] || [ $id -eq 2 ]
+        then
+            times=1
+        else
+            times=3
+        fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe"
         output_filename="port$port.cs-$id.problem$problem.$count.csv"
         command="mono $file ${input[$problem]}"
@@ -469,7 +491,7 @@ do
     do
         if [ $id -eq 2 ]
         then
-            times=1
+            times=2
         else
             times=3
         fi
@@ -485,11 +507,14 @@ do
     ids=(1 2 3 4 5 6)
     for id in ${ids[*]}
     do
-        if [ $id -eq 4 ] || [ $id -eq 6 ]
+        if [ $id -eq 2 ]
         then
             times=2
+        elif [ $id -eq 5 ] || [ $id -eq 3 ]
+        then
+            times=4
         else
-            times=1
+            times=3
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe"
         output_filename="port$port.cs-$id.problem$problem.$count.csv"
@@ -514,9 +539,14 @@ do
     #Revcomp - C#
     problem=5
     ids=(1 2 3 4 5 6)
-    times=1
     for id in ${ids[*]}
     do
+        if [ $id -eq 3 ]
+        then
+            times=3
+        else
+            times=7
+        fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.csharp-$id.exe"
         output_filename="port$port.cs-$id.problem$problem.$count.csv"
         command="mono $file ${input[$problem]}"
@@ -609,9 +639,14 @@ do
     #Revcomp - Ruby
     problem=5
     ids=(2 3)
-    times=1
     for id in ${ids[*]}
     do
+        if [ $id -eq 2 ]
+        then
+            times=2
+        else
+            times=4
+        fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.yarv-$id.yarv"
         output_filename="port$port.yarv-$id.problem$problem.$count.csv"
         command="ruby -W0 $file ${input[$problem]}"
@@ -637,15 +672,20 @@ do
     #Binarytrees - C
     problem=0
     ids=(1 5)
-    times=1
     for id in ${ids[*]}
     do
+        if [ $id -eq 5 ]
+        then
+            times=2
+        else
+            times=1
+        fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
         output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
-        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
+    file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
         output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
@@ -655,37 +695,13 @@ do
     #Fannkuchredux - C
     problem=1
     ids=(1 2 3 4 5)
-    times=1
     for id in ${ids[*]}
     do
-        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
-        output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
-        command="$file ${input[$problem]}"
-        echo $command
-        run
-        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
-        output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
-        command="$file ${input[$problem]}"
-        echo $command
-        run
-    done
-
-    #Fasta - C
-    problem=2
-    ids=(1 2 4 5 6 7)
-    for id in ${ids[*]}
-    do
-        if [ $id -eq 1 ]
+        if [ $id -eq 5 ]
         then
-            times=1
-        elif [ $id -eq 2 ] || [ $id -eq 7 ]
-        then
-            times=6
-        elif [ $id -eq 6 ]
-        then
-            times=4
+            times=3
         else
-            times=2
+            times=1
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
         output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
@@ -701,17 +717,17 @@ do
         run
     done
 
-    #Mandelbrot - C
-    problem=3
-    ids=(1 2 3 6)
+    #Fasta - C
+    problem=2
+    ids=(1 2 4 5 6 7)
     for id in ${ids[*]}
     do
-        if [ $id -eq 6 ]
+        if [ $id -eq 2 ]
         then
             times=6
-        elif [ $id -eq 2 ]
+        elif [ $id -eq 6 ] || [ $id -eq 5 ] || [ $id -eq 7 ]
         then
-            times=1
+            times=4
         else
             times=2
         fi
@@ -721,11 +737,44 @@ do
         echo $command
         run
 
-        if [ $id -eq 1 ]
+        if [ $id -eq 6 ]
         then
-            times=2
+            times=10
         else
+            times=2
+        fi
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
+        output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
+        echo $command
+        run
+    done
+
+    #Mandelbrot - C
+    problem=3
+    ids=(1 2 3 6)
+    for id in ${ids[*]}
+    do
+        if [ $id -eq 6 ]
+        then
+            times=18
+        elif [ $id -eq 2 ]
+        then
             times=1
+        else
+            times=4
+        fi
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
+        output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
+        command="$file ${input[$problem]}"
+        echo $command
+        run
+
+        if [ $id -eq 2 ]
+        then
+            times=1
+        else
+            times=2
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
         output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
@@ -737,7 +786,7 @@ do
     #Nbody - C
     problem=4
     ids=(1 2 3 4 5 6)
-    times=1
+    times=2
     for id in ${ids[*]}
     do
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
@@ -755,7 +804,7 @@ do
     #Revcomp - C
     problem=5
     ids=(1 2 3 4 5 6)
-    times=1
+    times=10
     for id in ${ids[*]}
     do
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
@@ -777,12 +826,12 @@ do
     do
         if [ $id -eq 1 ]
         then
-            times=1
+            times=2
         elif [ $id -eq 3 ]
         then
-            times=2
+            times=20
         else
-            times=4
+            times=32
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
         output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
@@ -792,7 +841,13 @@ do
 
         if [ $id -eq 4 ]
         then
-            times=4
+            times=20
+        elif [ $id -eq 5 ]
+        then
+            times=3
+        elif [ $id -eq 3 ]
+        then
+            times=2
         else
             times=1
         fi
@@ -809,9 +864,14 @@ do
     problem=0
     ids=(1 3 8)
     #2 and 6 negative output
-    times=2
     for id in ${ids[*]}
     do
+        if [ $id -eq 1 ]
+        then
+            times=8
+        else
+            times=10
+        fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
         output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
@@ -829,14 +889,21 @@ do
     #Fannkuchredux - C++
     problem=1
     ids=(1 4 6 7)
-    times=1
     for id in ${ids[*]}
     do
+        if [ $id -eq 1 ]
+        then
+            times=5
+        else
+            times=1
+        fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
         output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
+
+        times=1
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
         output_filename="noflags.port$port.c++-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
@@ -853,7 +920,7 @@ do
         then
             times=6
         else
-            times=2
+            times=3
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
         output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
@@ -861,7 +928,7 @@ do
         echo $command
         run
 
-        times=1
+        times=2
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
         output_filename="noflags.port$port.c++-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
@@ -874,12 +941,15 @@ do
     ids=(2 3 5 6 8 9)
     for id in ${ids[*]}
     do
-        if [ $id -eq 6 ]
+        if [ $id -eq 9 ]
         then
-            times=6
-        elif [ $id -eq 9 ]
+            times=18
+        elif [ $id -eq 6 ]
         then
-            times=2
+            times=36
+        elif [ $id -eq 8 ]
+        then
+            times=8
         else
             times=1
         fi
@@ -896,18 +966,28 @@ do
         echo $command
         run
     done
-END
+
     #Nbody - C++
     problem=4
     ids=(1 3 4 5 6 7 8)
-    times=1
     for id in ${ids[*]}
     do
+        if [ $id -eq 4 ] || [ $id -eq 7 ]
+        then
+            times=12
+        elif [ $id -eq 1 ] || [ $id -eq 6 ]
+        then
+            times=2
+        else
+            times=4
+        fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
         output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
+
+        times=1
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
         output_filename="noflags.port$port.c++-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
@@ -918,16 +998,36 @@ END
     #Revcomp - C++
     problem=5
     ids=(1 2 3 4 5)
-    times=1
     for id in ${ids[*]}
     do
-        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
-        output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
+        if [ $id -eq 5 ]
+        then
+            times=1
+        elif [ $id -eq 1 ]
+        then
+            times=8
+        elif [ $id -eq 3 ]
+        then
+            times=10
+        elif [ $id -eq 4 ] || [ $id -eq 2 ]
+        then
+            times=20
+        fi
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
+        output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command "<" $command2
         run_rev
-        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
-        output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
+
+        if [ $id -eq 1 ]
+        then
+            times=1
+        elif [ $id -eq 3 ] || [ $id -eq 2 ]
+        then
+            times=10
+        fi
+        file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
+        output_filename="noflags.port$port.c++-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command "<" $command2
         run_rev
@@ -943,33 +1043,28 @@ END
             times=2
         elif [ $id -eq 8 ]
         then
-            times=7
+            times=20
         else
-            times=8
+            times=40
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
         output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
-
-        if [ $id -eq 1 ]
-        then
-            times=1
-        fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
         output_filename="noflags.port$port.c++-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
     done
-    : <<'END'
+
     #idle power measure
+    sleep 10
     output_location="/var/scratch/lkoedijk/results/idle/end.port$port.count$count.csv"
     ssh lkoedijk@fs0.das4.cs.vu.nl $kill_measurement
     ssh lkoedijk@fs0.das4.cs.vu.nl $measure_script -o $output_location -p $port &
     sleep 60
     ssh lkoedijk@fs0.das4.cs.vu.nl $kill_measurement
-END
 done
 
