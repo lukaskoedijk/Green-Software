@@ -19,9 +19,11 @@ problems=(binarytrees fannkuchredux fasta mandelbrot nbody revcomp spectralnorm)
 input=(21 12 25000000 16000 50000000 "0" 5500)
 command2="/var/scratch/lkoedijk/revcomp/revcomp_large.txt" #needs to be cahnged for large
 
-port=3
-counts=(2 3)
+port=2
+counts=(1 2 3 4 5 6 7 8)
+#(6 7 8 9 10 11 12 13)
 #(1 2 3 4 5) #ALWAYS CHANGE TO MAKE SURE NO DUPLICATE ID's
+#24+24+16=64hours(use some extra)
 measure_script="/home/lkoedijk/$port.measure_continues.sh"
 kill_measurement="/home/lkoedijk/$port.kill_script.sh"
 output_location_base="/var/scratch/lkoedijk/results/"
@@ -141,7 +143,8 @@ do
 
     #Revcomp - Java
     problem=5
-    ids=(3 4 5 6 8)
+    ids=(4 5 6 8)
+    #exclude 3 because of sometimes run error
     times=8
     for id in ${ids[*]}
     do
@@ -174,7 +177,7 @@ do
     problem=0
     times=1
     file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.js"
-    output_filename="port$port.javascript.problem$problem.$count.csv"
+    output_filename="port$port.javascript-1.problem$problem.$count.csv"
     command="node $file ${input[$problem]}"
     echo $command
     run
@@ -681,12 +684,12 @@ do
             times=1
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
-        output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
+        output_filename="port$port.c-flags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
     file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
-        output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
+        output_filename="port$port.c-noflags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
@@ -704,14 +707,14 @@ do
             times=1
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
-        output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
+        output_filename="port$port.c-flags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
 
         times=1
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
-        output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
+        output_filename="port$port.c-noflags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
@@ -732,7 +735,7 @@ do
             times=2
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
-        output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
+        output_filename="port$port.c-flags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
@@ -744,7 +747,7 @@ do
             times=2
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
-        output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
+        output_filename="port$port.c-noflags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
@@ -765,7 +768,7 @@ do
             times=4
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
-        output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
+        output_filename="port$port.c-flags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
@@ -777,7 +780,7 @@ do
             times=2
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
-        output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
+        output_filename="port$port.c-noflags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
@@ -790,12 +793,12 @@ do
     for id in ${ids[*]}
     do
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
-        output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
+        output_filename="port$port.c-flags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
-        output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
+        output_filename="port$port.c-noflags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
@@ -808,12 +811,12 @@ do
     for id in ${ids[*]}
     do
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
-        output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
+        output_filename="port$port.c-flags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command "<" $command2
         run_rev
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
-        output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
+        output_filename="port$port.c-flags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command "<" $command2
         run_rev
@@ -834,7 +837,7 @@ do
             times=32
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-flags_run"
-        output_filename="flags.port$port.c-$id.problem$problem.$count.csv"
+        output_filename="port$port.c-flags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
@@ -852,7 +855,7 @@ do
             times=1
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
-        output_filename="noflags.port$port.c-$id.problem$problem.$count.csv"
+        output_filename="port$port.c-noflags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
@@ -873,14 +876,14 @@ do
             times=10
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
-        output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
+        output_filename="port$port.c++-flags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
 
         times=1
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
-        output_filename="noflags.port$port.c++-$id.problem$problem.$count.csv"
+        output_filename="port$port.c++-flags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
@@ -898,14 +901,14 @@ do
             times=1
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
-        output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
+        output_filename="port$port.c++-flags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
 
         times=1
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
-        output_filename="noflags.port$port.c++-$id.problem$problem.$count.csv"
+        output_filename="port$port.c++-noflags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
@@ -916,21 +919,21 @@ do
     ids=(1 2 3 4 6)
     for id in ${ids[*]}
     do
-        if [ $id -eq 5 ] || [ $id -eq 6 ]
+        if [ $id -eq 6 ]
         then
             times=6
         else
             times=3
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
-        output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
+        output_filename="port$port.c++-flags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
 
         times=2
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
-        output_filename="noflags.port$port.c++-$id.problem$problem.$count.csv"
+        output_filename="port$port.c++-noflags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
@@ -954,14 +957,14 @@ do
             times=1
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
-        output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
+        output_filename="port$port.c++-flags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
 
         times=1
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
-        output_filename="noflags.port$port.c++-$id.problem$problem.$count.csv"
+        output_filename="port$port.c++-noflags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
@@ -982,14 +985,14 @@ do
             times=4
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
-        output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
+        output_filename="port$port.c++-flags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
 
         times=1
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
-        output_filename="noflags.port$port.c++-$id.problem$problem.$count.csv"
+        output_filename="port$port.c++-noflags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
@@ -1014,7 +1017,7 @@ do
             times=20
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
-        output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
+        output_filename="port$port.c++-flags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command "<" $command2
         run_rev
@@ -1027,7 +1030,7 @@ do
             times=10
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
-        output_filename="noflags.port$port.c++-$id.problem$problem.$count.csv"
+        output_filename="port$port.c++-noflags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command "<" $command2
         run_rev
@@ -1048,12 +1051,12 @@ do
             times=40
         fi
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-flags_run"
-        output_filename="flags.port$port.c++-$id.problem$problem.$count.csv"
+        output_filename="port$port.c++-flags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
-        output_filename="noflags.port$port.c++-$id.problem$problem.$count.csv"
+        output_filename="port$port.c++-noflags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
