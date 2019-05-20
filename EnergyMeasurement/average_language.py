@@ -2,9 +2,13 @@ import pandas
 import os
 import numpy
 import matplotlib.pyplot as plt
+import sys
+
+port=sys.argv[1]
+print('port is:', port, type(port))
 
 path = os.getcwd()
-df = pandas.read_csv(path+"/newresults.csv", engine='python')
+df = pandas.read_csv(path+"/newresults" + port + ".csv", engine='python')
 
 result = []
 labels = ['Language', 'Binarytrees', 'Fannkuchredux', 'Fasta', 'Mandelbrot', 'Nbody', 'Revcomp', 'Spectralnorm']
@@ -25,7 +29,7 @@ for x in language:
     result.append([x] + values)
 
 df_al = pandas.DataFrame.from_records(result, columns=labels)
-df_al.to_csv('average_language.csv')
+df_al.to_csv('average_language' + port + '.csv')
 
 #graph per problem, on x-as the languages on y the energy
 for y in problems:
@@ -45,16 +49,16 @@ for y in problems:
     plt.xticks([0,1,2,3,4,5,6,7,8,9], language)
 #    plt.xticks(lang, language)
     if y == 'problem0':
-        plt.savefig("binarytrees_overview")
+        plt.savefig("binarytrees_overview" + port)
     elif y == 'problem1':
-        plt.savefig("fannkuchredux_overview")
+        plt.savefig("fannkuchredux_overview" + port)
     elif y == 'problem2':
-        plt.savefig("fasta_overview")
+        plt.savefig("fasta_overview" + port)
     elif y == 'problem3':
-        plt.savefig("mandelbrot_overview")
+        plt.savefig("mandelbrot_overview" + port)
     elif y == 'problem4':
-        plt.savefig("nbody_overview")
+        plt.savefig("nbody_overview" + port)
     elif y == 'problem5':
-        plt.savefig("revcomp_overview")
+        plt.savefig("revcomp_overview" + port)
     elif y == 'problem6':
-        plt.savefig("spectralnorm_overview")
+        plt.savefig("spectralnorm_overview" + port)

@@ -20,7 +20,7 @@ input=(21 12 25000000 16000 50000000 "0" 5500)
 command2="/var/scratch/lkoedijk/revcomp/revcomp_large.txt" #needs to be cahnged for large
 
 port=2
-counts=(1 2 3 4 5 6 7 8)
+counts=(5 6 7 8)
 #(6 7 8 9 10 11 12 13)
 #(1 2 3 4 5) #ALWAYS CHANGE TO MAKE SURE NO DUPLICATE ID's
 #24+24+16=64hours(use some extra)
@@ -56,6 +56,7 @@ run_rev() {
 
 for count in ${counts[*]}
 do
+    : <<'END'
     #idle power measure
     sleep 10
     output_location="/var/scratch/lkoedijk/results/idle/start.port$port.count$count.csv"
@@ -816,7 +817,7 @@ do
         echo $command "<" $command2
         run_rev
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gcc-$id-noflags_run"
-        output_filename="port$port.c-flags-$id.problem$problem.$count.csv"
+        output_filename="port$port.c-noflags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command "<" $command2
         run_rev
@@ -861,7 +862,7 @@ do
         run
     done
     #END
-
+END
     #: <<'END'
     #Binarytrees - C++
     problem=0
@@ -883,12 +884,12 @@ do
 
         times=1
         file="/var/scratch/lkoedijk/${problems[$problem]}/${problems[$problem]}.gpp-$id-noflags_run"
-        output_filename="port$port.c++-flags-$id.problem$problem.$count.csv"
+        output_filename="port$port.c++-noflags-$id.problem$problem.$count.csv"
         command="$file ${input[$problem]}"
         echo $command
         run
     done
-
+    : <<'END'
     #Fannkuchredux - C++
     problem=1
     ids=(1 4 6 7)
@@ -1069,5 +1070,6 @@ do
     ssh lkoedijk@fs0.das4.cs.vu.nl $measure_script -o $output_location -p $port &
     sleep 60
     ssh lkoedijk@fs0.das4.cs.vu.nl $kill_measurement
+END
 done
 

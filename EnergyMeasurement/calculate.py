@@ -1,11 +1,13 @@
 import pandas
 import os
+import math
 #import matplotlib.pyplot as plt
 
 # data = pandas.read_csv('results/primes_300000.csv', sep='\s*,\s*',
 #                        engine='python')
 
-result = []
+result2 = []
+result3 = []
 labels = ['Name', 'Joule(surface)', 'kWh(surface)', 'allJoule(surface)',
           'allkWh(surface)', 'time(ms)', 'time(string)']
 #labels = ['Name', 'time(ms)', 'time(string)']
@@ -14,22 +16,33 @@ labels = ['Name', 'Joule(surface)', 'kWh(surface)', 'allJoule(surface)',
 # because of running a program multiple times
 path = os.getcwd() + '/results/results'
 files = []
-empty = True
+empty2 = True
+empty3 = True
 for r, d, f in os.walk(path):
     for file in f:
         if 'start'in file or 'end' in file:
             if 'count1' not in file:
-                df1 = pandas.read_csv(os.path.join(r, file), sep='\s*,\s*', engine='python')
-                if empty:
-                    df_concat = df1
-                    empty = False
+                if 'port2' in file:
+                    df1 = pandas.read_csv(os.path.join(r, file), sep='\s*,\s*', engine='python')
+                    if empty2:
+                        df_concat2 = df1
+                        empty2 = False
+                    else:
+                        df_concat2 = pandas.concat((df_concat2, df1))
                 else:
-                    df_concat = pandas.concat((df_concat, df1))
+                    df1 = pandas.read_csv(os.path.join(r, file), sep='\s*,\s*', engine='python')
+                    if empty3:
+                        df_concat3 = df1
+                        empty3 = False
+                    else:
+                        df_concat3 = pandas.concat((df_concat3, df1))
         elif '.csv' in file:
             files.append(os.path.join(r, file))
 
-idle=df_concat['Power(W)'].mean()
-print("Idle mean: " + str(idle))
+idle2=df_concat2['Power(W)'].mean()
+idle3=df_concat3['Power(W)'].mean()
+print("Idle mean 2: " + str(idle2))
+print("Idle mean 3: " + str(idle3))
 
 for name in files:
 #    if name == "/Users/Lukas/Documents/Software Engeneering/Master Thesis/Green-Software/EnergyMeasurement/results/results/fasta/noflags.port3.c-6.problem2.1.csv":
@@ -46,6 +59,9 @@ for name in files:
     # days/weeks/months not implemented because we know that the programs
     # are not running that long)
     timeMs = data['TimeNODE(mS)'][data.index[-1]] - data['TimeNODE(mS)'][data.index[0]]
+    if math.isnan(timeMs):
+        print('NaN', name)
+        break
     milli = timeMs % 1000
     sec = (int(timeMs / 1000) % 60)
     min = (int(timeMs / (1000*60)) % 60)
@@ -63,10 +79,12 @@ for name in files:
                     data['Power(W)'][data.index[i+1]]) / 2 * (
             data['TimeNODE(mS)'][data.index[i+1]] -
             data['TimeNODE(mS)'][data.index[i]])
-        surface += ((data['Power(W)'][data.index[i]] - idle) +
-                    (data['Power(W)'][data.index[i+1]] - idle)) / 2 * (
-            data['TimeNODE(mS)'][data.index[i+1]] -
-            data['TimeNODE(mS)'][data.index[i]])
+        if 'port2' in name:
+            surface += ((data['Power(W)'][data.index[i]] - idle2) +
+                    (data['Power(W)'][data.index[i+1]] - idle2)) / 2 * (data['TimeNODE(mS)'][data.index[i+1]] - data['TimeNODE(mS)'][data.index[i]])
+        else:
+            surface += ((data['Power(W)'][data.index[i]] - idle3) +
+                        (data['Power(W)'][data.index[i+1]] - idle3)) / 2 * (data['TimeNODE(mS)'][data.index[i+1]] - data['TimeNODE(mS)'][data.index[i]])
     allsurfaceJ = allsurface/1000  # Make it in Joule
     allsurfacekWh = allsurfaceJ/3600000  # Make it in kWh
     surfaceJ = surface/1000  # Make it in Joule
@@ -85,8 +103,10 @@ for name in files:
 #    stddev = data['Power(W)'].std()
     name = os.path.split(name)[1]
 
-    result.append((name, surfaceJ, surfacekWh, allsurfaceJ, allsurfacekWh,
-                   timeMs, timeString))
+    if 'port2' in name:
+        result2.append((name, surfaceJ, surfacekWh, allsurfaceJ, allsurfacekWh, timeMs, timeString))
+    else:
+        result3.append((name, surfaceJ, surfacekWh, allsurfaceJ, allsurfacekWh, timeMs, timeString))
 #    if "port3" in name:#name.startswith( 'port3' ):
 #        result.append((name, timeMs, timeString))
                    #result.append((name, timeMs, timeString))
@@ -94,8 +114,10 @@ for name in files:
     if timeMs < 7000:
         print(name, timeString)
 
-df = pandas.DataFrame.from_records(result, columns=labels)
-df.to_csv('results.csv')
+df2 = pandas.DataFrame.from_records(result2, columns=labels)
+df2.to_csv('results2.csv')
+df3 = pandas.DataFrame.from_records(result3, columns=labels)
+df3.to_csv('results3.csv')
 #totaltime = df['time(ms)'].sum()
 #print(totaltime)
 #totaltimeSec = (int(totaltime / 1000) % 60)
