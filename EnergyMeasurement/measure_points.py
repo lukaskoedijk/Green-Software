@@ -10,7 +10,7 @@ for r, d, f in os.walk(path):
         if '.csv' in file:
             df = pandas.read_csv(os.path.join(r, file), sep='\s*,\s*', engine='python')
             df1 = df.diff()
-            if (df1.shape[0] < 70):
+            if (df1.shape[0] < 30):
                 print(file, df1.shape[0], df['TimeNODE(mS)'][df.index[-1]] - df['TimeNODE(mS)'][df.index[0]])
             for i, row in df1.iterrows():
                 if i != 0:

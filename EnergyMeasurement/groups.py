@@ -21,10 +21,22 @@ for i, row in df.iterrows():
             values[name] = [row['Joule(surface)']]
             id.append(name.split('.', 2)[1][-1])
 
+data = []
 for x in values.keys():
     plt.scatter([int(x.split('.', 2)[1][-1])] * len(values[x]), values[x], c='b', marker='.')
+    data.append(values[x])
 plt.xlabel('Programs')
 plt.ylabel('Energy consumption (Joule)')
 #plt.xticks(values.keys(), id)
-plt.savefig("Group." + language + "." + problem + "." + port + ".png")
+plt.ylim(bottom=0)
+plt.savefig(path + "/graphs" + port + "/Group." + language + "." + problem + "." + port + ".png")
 
+plt.figure()
+plt.boxplot(data)
+plt.xlabel('Program ID')
+plt.ylabel('Energy consumption (Joule)')
+plt.ylim(bottom=0)
+#print([i for i in range(1, len(data)+1)], id)
+plt.xticks([i for i in range(1, len(data)+1)], id)
+plt.savefig(path + "/graphs" + port + "/BOXGroup." + language + "." + problem + "." + port + ".png")
+plt.close()

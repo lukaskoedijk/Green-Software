@@ -20,7 +20,7 @@ input=(21 12 25000000 16000 50000000 "0" 5500)
 command2="/var/scratch/lkoedijk/revcomp/revcomp_large.txt" #needs to be cahnged for large
 
 port=2
-counts=(5 6 7 8)
+counts=(15 16 17 18 19 20 21 22)
 #(6 7 8 9 10 11 12 13)
 #(1 2 3 4 5) #ALWAYS CHANGE TO MAKE SURE NO DUPLICATE ID's
 #24+24+16=64hours(use some extra)
@@ -56,7 +56,6 @@ run_rev() {
 
 for count in ${counts[*]}
 do
-    : <<'END'
     #idle power measure
     sleep 10
     output_location="/var/scratch/lkoedijk/results/idle/start.port$port.count$count.csv"
@@ -862,7 +861,7 @@ do
         run
     done
     #END
-END
+
     #: <<'END'
     #Binarytrees - C++
     problem=0
@@ -889,7 +888,7 @@ END
         echo $command
         run
     done
-    : <<'END'
+
     #Fannkuchredux - C++
     problem=1
     ids=(1 4 6 7)
@@ -1070,6 +1069,5 @@ END
     ssh lkoedijk@fs0.das4.cs.vu.nl $measure_script -o $output_location -p $port &
     sleep 60
     ssh lkoedijk@fs0.das4.cs.vu.nl $kill_measurement
-END
 done
 
