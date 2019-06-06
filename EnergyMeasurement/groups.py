@@ -9,11 +9,12 @@ port = sys.argv[3]
 
 path = os.getcwd()
 df = pandas.read_csv(path+"/newresults" + port + ".csv", engine='python')
+df_outlier = pandas.read_csv(path + "/graphs" + port + "/outlier/port" + port + ".outliers.csv", engine='python')
 
 values = {}
 id = []
 for i, row in df.iterrows():
-    if (language + '-') in row['Name'] and problem in row['Name'] and ('port' + port) in row['Name']:
+    if (language + '-') in row['Name'] and problem in row['Name'] and ('port' + port) in row['Name'] and row['Name'] not in df_outlier.Name.values:
         name = ".".join(row['Name'].split(".", 3)[:3])
         if name in values.keys():
             values[name].append(row['Joule(surface)'])

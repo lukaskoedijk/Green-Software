@@ -25,7 +25,7 @@ for i, row in df.iterrows():
     for k in row.keys():
         if k != 'Language' and k != 'Unnamed: 0' and row[k] != "('NaN', 'NaN')":
             problem.append(problems.index(k))
-            mean, std, min, max = row[k].strip("()").split(',', 4)
+            mean, median, std, min, max = row[k].strip("()").split(',', 4)
             energy.append(float(mean))
             error.append(float(std)*float(mean)/100)
 

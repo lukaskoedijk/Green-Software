@@ -9,6 +9,7 @@ print('port is:', port)
 
 path = os.getcwd()
 df = pandas.read_csv(path+"/newresults" + port + ".csv", engine='python')
+df_outlier = pandas.read_csv(path + "/graphs" + port + "/outlier/port" + port + ".outliers.csv", engine='python')
 
 result = []
 labels = ['Language', 'Binarytrees', 'Fannkuchredux', 'Fasta', 'Mandelbrot', 'Nbody', 'Revcomp', 'Spectralnorm']
@@ -20,7 +21,7 @@ for x in language:
     for y in problems:
         rows = []
         for i, row in df.iterrows():
-            if x in row['Name'] and y in row['Name']:
+            if x in row['Name'] and y in row['Name'] and row['Name'] not in df_outlier.Name.values:
                 rows.append(row['Joule(surface)'])
         if len(rows) == 0:
             values.append(("NaN", "NaN"))
@@ -44,27 +45,28 @@ for y in problems:
             count = 0
             for x in language:
                 if x in row['Name']:
-                    lang.append(count)
-                    energy.append(row['Joule(surface)'])
+                    if row['Name'] not in df_outlier.Name.values:
+                        lang.append(count)
+                        energy.append(row['Joule(surface)'])
                 count += 1
     plt.scatter(lang, energy, c='b', marker='.')
     plt.xlabel('Languages')
     plt.ylabel('Energy consumption (Joule)')
     plt.xticks([0,1,2,3,4,5,6,7,8,9], language)
     if y == 'problem0':
-        plt.savefig(path + "/graphs" + port + "/binarytrees_overview" + port)
+        plt.savefig(path + "/graphs" + port + "/problem/binarytrees_overview" + port)
     elif y == 'problem1':
-        plt.savefig(path + "/graphs" + port + "/fannkuchredux_overview" + port)
+        plt.savefig(path + "/graphs" + port + "/problem/fannkuchredux_overview" + port)
     elif y == 'problem2':
-        plt.savefig(path + "/graphs" + port + "/fasta_overview" + port)
+        plt.savefig(path + "/graphs" + port + "/problem/fasta_overview" + port)
     elif y == 'problem3':
-        plt.savefig(path + "/graphs" + port + "/mandelbrot_overview" + port)
+        plt.savefig(path + "/graphs" + port + "/problem/mandelbrot_overview" + port)
     elif y == 'problem4':
-        plt.savefig(path + "/graphs" + port + "/nbody_overview" + port)
+        plt.savefig(path + "/graphs" + port + "/problem/nbody_overview" + port)
     elif y == 'problem5':
-        plt.savefig(path + "/graphs" + port + "/revcomp_overview" + port)
+        plt.savefig(path + "/graphs" + port + "/problem/revcomp_overview" + port)
     elif y == 'problem6':
-        plt.savefig(path + "/graphs" + port + "/spectralnorm_overview" + port)
+        plt.savefig(path + "/graphs" + port + "/problem/spectralnorm_overview" + port)
     plt.close()
 
     plt.figure()
@@ -77,22 +79,22 @@ for y in problems:
         data.append(col)
     plt.figure()
     plt.boxplot(data)
-    plt.xlabel('Program ID')
+    plt.xlabel('Languages')
     plt.ylabel('Energy consumption (Joule)')
     plt.ylim(bottom=0)
     plt.xticks([i for i in range(1, len(data)+1)], language)
     if y == 'problem0':
-        plt.savefig(path + "/graphs" + port + "/binarytrees_BOXoverview" + port)
+        plt.savefig(path + "/graphs" + port + "/problem/binarytrees_BOXoverview" + port)
     elif y == 'problem1':
-        plt.savefig(path + "/graphs" + port + "/fannkuchredux_BOXoverview" + port)
+        plt.savefig(path + "/graphs" + port + "/problem/fannkuchredux_BOXoverview" + port)
     elif y == 'problem2':
-        plt.savefig(path + "/graphs" + port + "/fasta_BOXoverview" + port)
+        plt.savefig(path + "/graphs" + port + "/problem/fasta_BOXoverview" + port)
     elif y == 'problem3':
-        plt.savefig(path + "/graphs" + port + "/mandelbrot_BOXoverview" + port)
+        plt.savefig(path + "/graphs" + port + "/problem/mandelbrot_BOXoverview" + port)
     elif y == 'problem4':
-        plt.savefig(path + "/graphs" + port + "/nbody_BOXoverview" + port)
+        plt.savefig(path + "/graphs" + port + "/problem/nbody_BOXoverview" + port)
     elif y == 'problem5':
-        plt.savefig(path + "/graphs" + port + "/revcomp_BOXoverview" + port)
+        plt.savefig(path + "/graphs" + port + "/problem/revcomp_BOXoverview" + port)
     elif y == 'problem6':
-        plt.savefig(path + "/graphs" + port + "/spectralnorm_BOXoverview" + port)
+        plt.savefig(path + "/graphs" + port + "/problem/spectralnorm_BOXoverview" + port)
     plt.close()

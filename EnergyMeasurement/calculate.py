@@ -16,35 +16,35 @@ labels = ['Name', 'Joule(surface)', 'kWh(surface)', 'allJoule(surface)',
 # because of running a program multiple times
 path = os.getcwd() + '/results/results'
 files = []
-empty2 = True
-empty3 = True
+idle2 = {}
+idle3 = {}
 for r, d, f in os.walk(path):
     for file in f:
         if 'start'in file or 'end' in file:
-            if 'count1' not in file:
-                if 'port2' in file:
-                    df1 = pandas.read_csv(os.path.join(r, file), sep='\s*,\s*', engine='python')
-                    if empty2:
-                        df_concat2 = df1
-                        empty2 = False
-                    else:
-                        df_concat2 = pandas.concat((df_concat2, df1))
+            if 'port2' in file:
+                df1 = pandas.read_csv(os.path.join(r, file), sep='\s*,\s*', engine='python')
+                name = file.split("count")[1].split(".")[0]
+                if name in idle2.keys():
+                    concat = pandas.concat((idle2[name], df1))
+                    idle2[name] = concat['Power(W)'].mean()
                 else:
-                    df1 = pandas.read_csv(os.path.join(r, file), sep='\s*,\s*', engine='python')
-                    if empty3:
-                        df_concat3 = df1
-                        empty3 = False
-                    else:
-                        df_concat3 = pandas.concat((df_concat3, df1))
+                    idle2[name] = df1
+            else:
+                df1 = pandas.read_csv(os.path.join(r, file), sep='\s*,\s*', engine='python')
+                name = file.split("count")[1].split(".")[0]
+                if name in idle3.keys():
+                    concat = pandas.concat((idle3[name], df1))
+                    idle3[name] = concat['Power(W)'].mean()
+                else:
+                    idle3[name] = df1
         elif '.csv' in file:
             files.append(os.path.join(r, file))
 
-idle2=df_concat2['Power(W)'].mean()
-idle3=df_concat3['Power(W)'].mean()
-print("Idle mean 2: " + str(idle2))
-print("Idle mean 3: " + str(idle3))
+print("Idle mean 2:", idle2)
+print("Idle mean 3:", idle3)
 
 for name in files:
+    count = name.split(".")[-2]
 #    if name == "/Users/Lukas/Documents/Software Engeneering/Master Thesis/Green-Software/EnergyMeasurement/results/results/fasta/noflags.port3.c-6.problem2.1.csv":
 #        continue
     data = pandas.read_csv(name, sep='\s*,\s*', engine='python')
@@ -80,11 +80,11 @@ for name in files:
             data['TimeNODE(mS)'][data.index[i+1]] -
             data['TimeNODE(mS)'][data.index[i]])
         if 'port2' in name:
-            surface += ((data['Power(W)'][data.index[i]] - idle2) +
-                    (data['Power(W)'][data.index[i+1]] - idle2)) / 2 * (data['TimeNODE(mS)'][data.index[i+1]] - data['TimeNODE(mS)'][data.index[i]])
+            surface += ((data['Power(W)'][data.index[i]] - idle2[count]) +
+                    (data['Power(W)'][data.index[i+1]] - idle2[count])) / 2 * (data['TimeNODE(mS)'][data.index[i+1]] - data['TimeNODE(mS)'][data.index[i]])
         else:
-            surface += ((data['Power(W)'][data.index[i]] - idle3) +
-                        (data['Power(W)'][data.index[i+1]] - idle3)) / 2 * (data['TimeNODE(mS)'][data.index[i+1]] - data['TimeNODE(mS)'][data.index[i]])
+            surface += ((data['Power(W)'][data.index[i]] - idle3[count]) +
+                        (data['Power(W)'][data.index[i+1]] - idle3[count])) / 2 * (data['TimeNODE(mS)'][data.index[i+1]] - data['TimeNODE(mS)'][data.index[i]])
     allsurfaceJ = allsurface/1000  # Make it in Joule
     allsurfacekWh = allsurfaceJ/3600000  # Make it in kWh
     surfaceJ = surface/1000  # Make it in Joule
