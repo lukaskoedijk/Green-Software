@@ -4,14 +4,21 @@ import numpy
 import sys
 import matplotlib.pyplot as plt
 from sklearn.cluster import DBSCAN
+from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
-#from scipy.stats import shapiro
+from scipy.stats import shapiro
 from scipy.stats import ks_2samp
+from scipy.stats import mannwhitneyu
 
 port=sys.argv[1]
 test=sys.argv[2]
 print('port is:', port)
 print('test is:', test)
+#Test 1 is comparing two distributions (ks 2 sample test)
+#Test 2 is finding outliers (dbscan)
+#Test 3 is checking if normally distributed (shapiro wilkens test)
+#Test 4 is clustering (kmeans)
+#Test 5 is comparing two means (mann whitney u test)
 
 path = os.getcwd()
 df = pandas.read_csv(path + "/newresults" + port + ".csv", engine='python')
@@ -112,6 +119,13 @@ if test == '1':
                 #print(filename, stat, p)
 
 elif test == '2':
+    count1clust = 0
+    count2clust = 0
+    countMulticlust = 0
+    countTime = 0
+    countSame = 0
+    Same = 0
+    diff = []
     results = []
     minPts = 4
     
@@ -131,13 +145,21 @@ elif test == '2':
         slopes = []
         kdist.sort(reverse=True)
         for k in range(1, len(kdist)):
-            slopes.append(kdist[k]-kdist[k-1])
+            slopes.append(abs(kdist[k]-kdist[k-1]))
         div = 0.15
         eps = 1
+        color = []
         for l in range(len(slopes)-1):
             if abs(slopes[l] - slopes[l+1]) >= div:
                 div = abs(slopes[l] - slopes[l+1])
                 eps = kdist[l+1]
+                color = ['b' for i in range(l+1)] + ['r'] + ['b' for i in range(len(slopes)-1-l)]
+    
+        plt.figure()
+        plt.subplot(212)
+        plt.scatter([i for i in range(len(kdist))], kdist, c=color, marker='.')
+        plt.xlabel("ID")
+        plt.ylabel("eps")
 
         #2d outlier/anomaly check
         cluster = DBSCAN(eps=eps, min_samples=minPts, metric='euclidean').fit(data)
@@ -147,20 +169,206 @@ elif test == '2':
             if label[q] == -1:
                 color.append('r')
                 results.append([allnames[total.index(d)][q], eps, d[q][0], d[q][1]])
+            elif label[q] == 0:
+                color.append('b')
+            elif label[q] == 1:
+                color.append('g')
+            elif label[q] == 2:
+                color.append('y')
+            elif label[q] == 3:
+                color.append('c')
             else:
                 color.append('b')
-        plt.figure()
+    
+        plt.subplot(211)
         plt.scatter([x[0] for x in d], [y[1] for y in d], c=color, marker='.')
         plt.xlabel('time(s)')
         plt.ylabel('Joule(surface)')
         plt.ylim(bottom=0)
         plt.xlim(left=0)
-        plt.savefig(path + "/graphs" + port + "/outlier/port" + port + ".bdscan." + totalnames[total.index(d)] + ".png")
+        plt.savefig(path + "/graphs" + port + "/outlier/port" + port + ".bdscan." + totalnames[total.index(d)] + ".eps" + str(int(eps*100)/100) + ".png")
         plt.close()
+        
+        
+        val1, val2 = [], []
+        for j in range(len(d)):
+            if  int(allnames[total.index(d)][j].split(".")[-2]) >= 13:
+                val1.append(d[j][1])
+            else:
+                val2.append(d[j][1])
+        d2, p2 = ks_2samp(val1, val2)
+        if p2 > 0.05:
+            Same += 1
 
+        if 0 in label and 1 in label and 2 not in label:
+            count2clust += 1
+            group1, value1 = [], []
+            group2, value2 = [], []
+            for i in range(len(label)):
+                if label[i] == 0:
+                    group1.append(int(allnames[total.index(d)][i].split(".")[-2]))
+                    value1.append(d[i][1])
+                if label[i] == 1:
+                    group2.append(int(allnames[total.index(d)][i].split(".")[-2]))
+                    value2.append(d[i][1])
+        
+            if (max(group1) <= 22 and min(group1) >= 13) or (max(group2) <= 22 and min(group2) >= 13):
+                countTime += 1
+                diff.append([totalnames[total.index(d)]])
+                d, p = ks_2samp(value1, value2)
+                if p > 0.05:
+                    countSame += 1
+            else:
+                print(group1, group2)
+        elif 1 not in label:
+            count1clust += 1
+        else:
+            countMulticlust += 1
+                
     df_outliers = pandas.DataFrame.from_records(results, columns=['Name', 'Eps', 'Time', 'Energy'])
     df_outliers.to_csv(path + "/graphs" + port + "/outlier/port" + port + ".outliers.csv")
+    df_diff = pandas.DataFrame.from_records(diff, columns=['Name'])
+    df_diff.to_csv(path + "/graphs" + port + "/timediff.csv")
 
+    print('1 cluster:', count1clust)
+    print('2 clusters:', count2clust)
+    print('The amount of 2 clusters that follow date:', countTime)
+    print('The amount of 2 clusters that follow date and have the same distribution:', countSame)
+    print('The that have same distribution for different date:', Same)
+    print('multiple clusters:', countMulticlust)
+
+elif test == '3':
+    notNormalE = 0
+    notNormalT = 0
+    for d in total:
+        dataE = []
+        dataT = []
+        for point in range(len(d)):
+            if allnames[total.index(d)][point] not in df_outlier.Name.values:
+                dataE.append(d[point][1])
+                dataT.append(d[point][0])
+
+        dataE.sort()
+        dataT.sort()
+        statE, pE = shapiro(dataE)
+        statT, pT = shapiro(dataT)
+        if pE < 0.01:
+            notNormalE += 1
+        if pT < 0.01:
+            notNormalT += 1
+            #print(filename, stat, p)
+
+    print("notNormal energy:", notNormalE)
+    print("notNormal time:", notNormalT)
+    print("Total:", len(total))
+
+elif test == '4':
+    groupTime = 0
+    countSame = 0
+    diff = []
+    
+    for d in total:
+        data = []
+        for point in range(len(d)):
+            if allnames[total.index(d)][point] not in df_outlier.Name.values:
+                data.append(d[point])
+
+        kmeans = KMeans(n_clusters=2).fit(data)
+        labelK = list(kmeans.labels_)
+        color = []
+        group1 = []
+        group2 = []
+        value1 = []
+        value2 = []
+        for i in range(len(labelK)):
+            if labelK[i] == 1:
+                color.append('b')
+                group1.append(int(allnames[total.index(d)][i].split(".")[-2]))
+                value1.append(d[i][1])
+            else:
+                color.append('r')
+                group2.append(int(allnames[total.index(d)][i].split(".")[-2]))
+                value2.append(d[i][1])
+
+        plt.figure()
+        plt.scatter([x[0] for x in data], [y[1] for y in data], c=color, marker='.')
+        plt.xlabel('time(s)')
+        plt.ylabel('Joule(surface)')
+        plt.ylim(bottom=0)
+        plt.xlim(left=0)
+        plt.savefig(path + "/graphs" + port + "/cluster/port" + port + ".kmeans." + totalnames[total.index(d)] + ".png")
+        plt.close()
+
+        if port == '2':
+            if (min(group1) >= 13 and max(group2) < 15) or (min(group2) >= 13 and max(group1) < 15):
+                groupTime += 1
+                diff.append([totalnames[total.index(d)]])
+                d, p = ks_2samp(value1, value2)
+                if p > 0.05:
+                    countSame += 1
+        if port == '3':
+            if (min(group1) >= 18 and max(group2) < 20) or (min(group2) >= 18 and max(group1) < 20):
+                groupTime += 1
+                diff.append([totalnames[total.index(d)]])
+                d, p = ks_2samp(value1, value2)
+                if p > 0.05:
+                    countSame += 1
+
+    print("The amount of 2 clusters based on measure moment are:", groupTime)
+    print("The amount of 2 clusters that are cluster on measure moment and follow the same distribution are:", countSame)
+
+    df_diff = pandas.DataFrame.from_records(diff, columns=['Name'])
+    df_diff.to_csv(path + "/graphs" + port + "/timediff.csv")
+
+elif test == '5':
+    samedist = []
+    count = 0
+    for d1 in total:
+        for i2 in range(total.index(d1)+1, len(total)):
+            name1 = totalnames[total.index(d1)]
+            name2 = totalnames[i2]
+            if name1.split(".")[1] == name2.split(".")[1] and (name1.split(".")[0]).split("-", 2)[:-1] == (name2.split(".")[0]).split("-", 2)[:-1]:
+                value1 = []
+                for point in range(len(d1)):
+                    if allnames[total.index(d1)][point] not in df_outlier.Name.values:
+                        value1.append(d1[point][1])
+                value2 = []
+                for point in range(len(total[i2])):
+                    if allnames[i2][point] not in df_outlier.Name.values:
+                        value2.append(total[i2][point][1])
+                
+                u1, p1 = mannwhitneyu(value1, value2, alternative='less')
+                u2, p2 = mannwhitneyu(value1, value2, alternative='greater')
+                if p1 < 0.05 and p2 < 0.05:
+                    print("Same mean:", name1, name2, d, p)
+                    count += 1
+                    plt.figure()
+                    plt.subplot(211)
+                    y1 = [y[1] for y in d1]
+                    y2 = [y[1] for y in total[i2]]
+                    y1.sort()
+                    y2.sort()
+                    plt.scatter([x for x in range(len(d1))], y1, c='b', marker='.')
+                    plt.scatter([x for x in range(len(total[i2]))], y2, c='r', marker='.')
+                    plt.xlabel('ID')
+                    plt.ylabel('Energy consumption (Joule)')
+                    plt.ylim(bottom=0)
+                    
+                    plt.subplot(212)
+                    plt.scatter([x[0] for x in d1], [y[1] for y in d1], c='b', marker='.')
+                    plt.scatter([x[0] for x in total[i2]], [y[1] for y in total[i2]], c='r', marker='.')
+                    plt.xlabel('Run-time (Seconds)')
+                    plt.ylabel('Energy consumption (Joule)')
+                    plt.ylim(bottom=0)
+                    plt.xlim(left=0)
+                    plt.savefig(path + '/graphs' + port + '/samedist/port' + port + '.mann.' + name1 + '-' + name2 + '.png')
+                    plt.close()
+                    
+                    samedist.append([name1, name2, d, p])
+    print("The amount of programs that have the same distribution:", count)
+
+    df = pandas.DataFrame.from_records(samedist, columns=['Program1', 'Program2', 'd', 'p'])
+    df.to_csv(path + '/graphs' + port + '/samedist/port' + port + 'same_distribution.csv')
 
 
 #use 2 for secondary clusters and len(total)/2 otherwise
