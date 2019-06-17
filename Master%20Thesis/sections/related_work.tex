@@ -1,6 +1,12 @@
 \chapter{Related work}
 \label{ch:related_work}
 %We divide the related work into ... categories:  ...
+%-overview
+%-subsection{finding optimal energy consumption}
+%-subsection{estimating energy consumption}
+%-subsection{hardware influence on energy consumption}
+%-subsection{software influence on energy consumption}
+%-subsection{other}
 
 To get an overview of the related research I made a table, table \ref{table:LiteratureStudy}, comparing the different papers. Most research is about reducing the energy consumption of a specific piece of hardware, for example scheduling on a multi-core processor. There are also some papers about reducing the energy consumption in the software and the decision making process. There is also some research done on the energy consumption of software, but their research goal was to estimate the energy consumption. Therefore what I miss and want to look into is to research if there is a good way of writing code regards the energy consumption.
 
@@ -69,5 +75,5 @@ This paper proposes an algorithm to makes sure all cores in a multi-core process
  %  negative correlation factor?
 %  Evaluation on the same application as used for calculating this new equation
  \subsection{Accurately Simulating Energy Consumption of I/O-intensive Scientific Workflows \cite{ferreiradasilva-iccs-2019}}
- This paper looks at two applications that are I/O heavy. Different tasks were run for these applications and the energy consumption was measured. Another variable in their experiments was the amount of cores used. They compared the energy values measured with a commonly used estimation scheme for the energy consumption which only looks at the CPU utilization. They notice a difference and the correlation between power consumption and CPU utilization was close to zero. The reason for this was that the estimation scheme didn't factor in the energy consumption of I/O operations. Therefor they came up with a scheme that factors in the CPU utilization and the I/O operations. This scheme used values from the tests to put in different values in the formula and was tested against the two applications and they found a small error. This is a issue for me, because you expect the data you used to create a model to fit the model. A better approach would have been to use one application for calculating the values and the other for the validation.
+ This paper looks at two applications that are I/O heavy. Different tasks were run for these applications and the energy consumption was measured. Another variable in their experiments was the amount of cores used. They compared the energy values measured with a commonly used estimation scheme for the energy consumption which only looks at the CPU utilization. They noticed a difference and the correlation between power consumption and CPU utilization was close to zero. The reason for this was that the estimation scheme didn't factor in the energy consumption of I/O operations. Therefor they came up with a scheme that factors in the CPU utilization and the I/O operations. This scheme used values from the tests to put in different values in the formula and was tested against the two applications and they found a small error. This is an issue for me, because you expect the data you used to create a model to fit the model. A better approach would have been to use one application for calculating the values and the other for the validation.
  

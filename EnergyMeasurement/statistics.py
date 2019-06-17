@@ -340,7 +340,7 @@ elif test == '5':
                 u1, p1 = mannwhitneyu(value1, value2, alternative='less')
                 u2, p2 = mannwhitneyu(value1, value2, alternative='greater')
                 if p1 < 0.05 and p2 < 0.05:
-                    print("Same mean:", name1, name2, d, p)
+                    print("Same median:", name1, name2, d, p)
                     count += 1
                     plt.figure()
                     plt.subplot(211)

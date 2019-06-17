@@ -3,6 +3,7 @@ import os
 import numpy
 import matplotlib.pyplot as plt
 import sys
+from scipy.stats import mannwhitneyu
 
 port=sys.argv[1]
 print('port is:', port)
@@ -98,3 +99,26 @@ for y in problems:
     elif y == 'problem6':
         plt.savefig(path + "/graphs" + port + "/problem/spectralnorm_BOXoverview" + port)
     plt.close()
+
+    order = []
+    for l in data:
+        meanCompare = []
+        for l2 in data:
+            if len(l2) == 0 or len(l) == 0:
+                meanCompare.append('NaN')
+            elif l == l2:
+                meanCompare.append(0)
+            else:
+                u1, p1 = mannwhitneyu(l, l2, alternative='less')
+                u2, p2 = mannwhitneyu(l, l2, alternative='greater')
+                if p1 < 0.05 and p2 < 0.05:
+                    meanCompare.append(0)
+                elif p1 < 0.05:
+                    meanCompare.append(1)
+                elif p2 < 0.05:
+                    meanCompare.append(-1)
+                else:
+                    meanCompare.append("Undifined")
+        order.append(meanCompare.count(-1) + 1)
+    print("Order for:", y, "is", order)
+

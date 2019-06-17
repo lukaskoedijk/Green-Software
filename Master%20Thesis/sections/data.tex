@@ -2,17 +2,18 @@
 \label{ch:data}
 
 \section{Programming languages}
-To find data I first need to decide which programming languages to choose for testing. I did this by looking into what the most popular and most used programming languages are. For this question it depends who you ask what the resulting most popular programming language is. Therefor I used four sources to determine which programming language to use. The four sources are indeed, git-hub, TIOBE and PYPL.\\
+To find data we first need to decide which programming languages to choose for testing. We did this by looking into what the most popular and most used programming languages are. For this question it depends who you ask which result you get. Therefor four sources were used to determine which programming language to use. The four sources are indeed, git-hub, TIOBE and PYPL.\\
+%what the resulting most popular programming language is
 
 Indeed is a job search site. They looked at the percentage of jobs with a programming language in their name in the tech software category \cite{ray:2018}. Thus the more job offering for a programming language the more popular that programming language is. The problem with this method is that job offerings do not show how many people work with a programming language, but only which programming language has a shortage in programmers. Based on data form September 2018 the top ten according to this method is Java, JavaScript, HTML, Python, C\#, C++, XML, Ruby, PHP and Perl.\\
 
 Git-hub is a version control system where multiple programmers collaborate in a project. They looked at the amount of pull requests made for that language \cite{zap:2019}. The thought was that the language that programmers work a lot with on git is the most popular, but this is based on only the public repositories. In the first quarter of 2019 the top ten according to this method is JavaScript, Python, Java, Go, C++, Ruby, PHP, TypeScript, C\# and C. \\
 
-TIOBE is a software quality company. They looked at the amount of hits they got when searching "[Language] programming" on a lot of different search engines \cite{tio:2019}. There are rules which a search engine needs to comply with for it to be used in the calculation and they also look a what type of hit they find to determine whether or not to use it in the calculations. The pitfall of this method is the favouritism for complex languages. When a language is more difficult to understand, more page of tutorials are needed and more questions about this language will be asked. As of April 2019 the top 10 according to this method is Java, C, C++, Python, Visual Basic .NET, C\#, JavaScript, SQL, PHP and Assembly language.\\
+TIOBE is a software quality company. They looked at the amount of hits they got when searching "[Language] programming" on a lot of different search engines \cite{tio:2019}. There are rules which a search engine needs to comply with for it to be used in the calculations and they also look a what type of hits they find to determine whether or not to use it in the calculations. The pitfall of this method is the favouritism for complex languages. When a language is more difficult to understand, more page of tutorials are needed and more questions about this language will be asked. As of April 2019 the top 10 according to this method is Java, C, C++, Python, Visual Basic .NET, C\#, JavaScript, SQL, PHP and Assembly language.\\
 
 PYPL index stands for the PopularitY Programming Language index. They look at how many times a language tutorial is searched \cite{car:2019}. This method also has favouritism for complex languages, where programmers need to use the tutorials a lot because of the difficulty. Based on data form April 2019 the top ten according to this method is Python, Java, JavaScript, C\#, PHP, C/C++, R, Objective-C, Swift and Matlab.\\
 
-When languages are in all the four top tens I labelled them as popular and these language I am going to investigate, thus the languages Java, JavaScript, Python, C\#, C++ and PHP. I also choose to investigate C and Ruby. C because it was in three of the four top tens and I found it interesting to see the difference in the variations of C like C++ and C\#. Ruby was in two of the top tens, but also 13th according to TIOBE and 12th in the PYPL index. Thus Ruby was close to be in all the top tens.
+When languages are in all the four top tens they were labelled as popular and these are the languages that are gonna be investigated, thus the languages Java, JavaScript, Python, C\#, C++ and PHP. We also choose to investigate C and Ruby. C because it was in three of the four top tens and it seemed interesting to see the difference in the variations of C like C++ and C\#. Ruby was in two of the top tens, but also 13th according to TIOBE and 12th in the PYPL index. Thus Ruby was close to be in all the top tens and therefor also chosen to be investigated.
 
 
 % Binarytrees:
@@ -153,11 +154,36 @@ When languages are in all the four top tens I labelled them as popular and these
 %               c++ 4:fatal error: string_view: No such file or directory
 
 \section{Gathering data}
-To be able to compare different programs they need to have the same functionality. To get this done I looked at \textit{the computer language benchmark game} \cite{gouy:2019}. This benchmark game compares different programs and languages based on their speed, memory usage, zipped program size and CPU usage. They have ten different problems with a lot of programs from different language. Everyone can submit a program if it holds to the two requirements. The requirements are that the program has the correct output and that it uses the same algorithm. This is important because we want to compare the way of writing a program and the difference in programming language, but not the difference in algorithm used. For every program used they also have the compiling steps listed and for every problem the correct output.\\
+To be able to compare different programs they need to have the same functionality. A source for programs that have the same functionality is  \textit{the computer language benchmark game} \cite{gouy:2019}. This benchmark game compares different programs and languages based on their speed, memory usage, zipped program size and CPU usage. They have ten different problems with a lot of programs from different languages. Everyone can submit a program if it holds to the two requirements. The requirements are that the program has the correct output and that it uses the same algorithm. This is important because we want to compare the way of writing a program and the difference in programming language, but not the difference in algorithm used. For every program used they also have the compiling steps listed and for every problem the correct output.\\
 
-I went through all the ten problems and downloaded the programs from the chosen languages. After this I tested if I could compile the programs, run them and have the correct output. This was all done on the DAS5 to make sure there were no local dependencies. There were three problems, Knucleotide, Pidigits and Regexredux, that didn't had for every programming language a program that could be run or had the correct output. I decided to still run these problems and just have a few empty slot in our results. For Knucleotide the programming languages were JavaScript and C, for Regexredux it was PHP and C++ and for Pidigits it was Python3. I have this data set on a public Git-Hub repository along side other material needed for my thesis. The link to this repository is \url{https://github.com/lukaskoedijk/Green-Software} and for the data set move to \textit{EnergyMeasurement/programs}.\\
+All the programs for the ten problems in our seven programming languages were downloaded. These programs were then tested to see if they could compile, run and have the correct output. This was all done on the DAS5 to make sure there were no local dependencies. All the programs that weren't compiling, gave a run error or gave the wrong output were excluded from the data set. There were three problems, Knucleotide, Pidigits and Regexredux, that for different programming languages use a partly different algorithm because of different library implementations. Therefor we excluded these problems from the data set. The problem Mandelbrot didn't have a working version of the JavaScript implementation, but this problem will still be used and we will just have an empty spot in our results.\\
 
-This resulted in a large data set. With data from the benchmark game I calculated that to run all the programs for the eight programming languages for the ten problems would take around nine hours. Because this is a large amount of time I decided to only measure every program three times, which would take around 27 hours. Of course running programs more often would give more accurate results, but this was just too time consuming.\\
+% that didn't had for every programming language a program that could be run or had the correct output and they also had . I decided to still run these problems and just have a few empty slot in our results. For Knucleotide the programming languages were JavaScript and C, for Regexredux it was PHP and C++ and for Pidigits it was Python3. I have this data set on a public Git-Hub repository along side other material needed for my thesis. The link to this repository is \url{https://github.com/lukaskoedijk/Green-Software} and for the data set move to \textit{EnergyMeasurement/programs}.\\
+
+Before running all the programs some needed to be compiled first. The compilation step of languages that have a separated compilation step were not included in the energy measuring. The reason for this is that a finished program is compiled once and then could be used multiple times. This does mean that the languages JavaScript, Python, PHP and Ruby have a bit of a disadvantage, because they don't have a separate compilation step. The compiler can nowadays do a lot of optimizations of the code. During this research we want to see the result of user decisions on the energy consumption. Therefore besides testing the programs with the flags used on the language benchmark game we also tested with as few flags as possible. This means that we removed all the optimization flags except the ones needed for the compilation. Also the compiler version of the different languages is important. To give a good pictures of were we stand today we need to use the most recent stable version and also the most commonly used one. Unfortunately it isn't that easy to update the language versions on the DAS. Therefore I used the versions that were already on their and these programming language versions are listed alongside the compiler used in table \ref{tab:version}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Languages}  & \textbf{Compiler} & \textbf{Version}   \\ \hline
+Java       & javac    & 1.8.0\textunderscore161 \\ \hline
+JavaScript & node     & 6.12.3    \\ \hline
+Python     & python   & 3.4.5     \\ \hline
+PHP        & php      & 5.4.16    \\ \hline
+C          & gcc      & 6.3.0     \\ \hline
+C++        & gcc      & 6.3.0     \\ \hline
+C\#         & mcs      & 5.10.1.20 \\ \hline
+Ruby       & ruby     & 2.0.0     \\ \hline
+\end{tabular}
+\caption{All the different compilers and versions of the programming languages used}
+\label{tab:version}
+\end{table}
+
+This all resulted in a large data set of 202 programs with 67 programs that had to run twice, once with and once without flags. Running all these programs takes about eight hours to complete. Unfortunately we were only allowed to use a node on the DAS for 30 minutes to run one script during working hours. This means that we had to run it at night and in the weekend, which limited the amount of data points that were measured. Of course running programs more often would give more accurate results, but this was just too time consuming.\\
+
+Some programs were too fast to get a good amount of energy measurement points. To solve this problem those programs were run for multiple times during one measurement and then afterwards their energy consumption was divided by the amount of times the programs was run. Another problem that occurred was that retrieving a measure point takes a variable amount of time. This caused some programs to still not have a good amount of energy measurement points. Therefor I decided to set a minimum amount of 30 of measurement points needed in order for it to be used. \\
+% With data from the benchmark game I calculated that to run all the programs for the eight programming languages for the ten problems would take around nine hours. Because this is a large amount of time I decided to only measure every program three times, which would take around 27 hours. Of course running programs more often would give more accurate results, but this was just too time consuming.\\
 
 % PHP:-d memory_limit=1024M -> set entry memory_limit to 1024M
 % C:  -pipe -> use pipe instead of temporary files for communication                     between compiling stages 
@@ -192,26 +218,36 @@ This resulted in a large data set. With data from the benchmark game I calculate
 %     -O0 -> disable optimizations
 % Ruby: -w0 -> verbose mode silence
 
-Before running all the programs some needed to be compiled first. The compiler can nowadays do a lot of optimizations of the code. During this research we want to see the result of user decisions on the energy consumption. Therefore we limited the optimizations as much as possible. This means that we removed all the optimization flags except the ones needed for the compilation. Also the compiler version of the different languages is important. To give a good pictures of were we stand today we need to use the most recent stable version. Unfortunately it isn't that easy to update the language versions on the DAS. Therefore I used the versions that were already on their and these programming language versions are listed alongside the compiler used in table \ref{tab:version}.
+In the previous chapter we found that the energy consumption of a program is the sum of the CPU, memory and disk energy consumption \cite{acar2016impact}. To get a good view on what influences the energy consumption, our problems need to be diverse when it comes to these three categories. The problems that we looked into are called Binarytrees, Fannkuchredux, Fasta, Mandelbrot, Nbody, Revcomp and Spectralnorm. For the Binarytrees problem a lot of trees are allocated and deallocated in memory and thus this is a memory intensive task. The fannkuchredux problem does a lot of calculations on all permutations and is thus CPU intensive. The Fasta problem creates and saves a large DNA sequence and is memory intensive. For the Mandelbrot problem a large bitmap is saved and thus is it memory intensive. The Nbody problem models the orbit of Jovian planets and is CPU intensive. The Revcomp problem reads a DNA sequences line by line, transforms them and writes the result to output. Therefor the Revcomp problem is disk intensive. For the Spectralnorm problem a lot of calculations are done on a large matrix and is thus CPU intensive. A more extensive explanation of the problems can be found on the computer language benchmark game website \cite{gouy:2019}. An overview of category and problem is shown in table \ref{tab:problems}.
 
 \begin{table}[h]
 \centering
-\begin{tabular}{|l|l|l|}
+\begin{tabular}{|l|l|}
 \hline
-Languages  & Compiler & Version   \\ \hline
-Java       & javac    & 1.8.0\textunderscore161 \\ \hline
-JavaScript & node     & 6.12.3    \\ \hline
-Python     & python   & 3.4.5     \\ \hline
-PHP        & php      & 5.4.16    \\ \hline
-C          & gcc      & 6.3.0     \\ \hline
-C++        & gcc      & 6.3.0     \\ \hline
-C\#         & mcs      & 5.10.1.20 \\ \hline
-Ruby       & ruby     & 2.0.0     \\ \hline
+\textbf{Category} & \textbf{Problems}                           \\ \hline
+CPU      & Fannkuchredux, Nbody, Spectralnorm \\ \hline
+Memory   & Binarytrees, Fasta, Mandelbrot     \\ \hline
+Disk     & Revcomp                            \\ \hline
 \end{tabular}
-\caption{All the different compilers and versions of the programming languages used}
-\label{tab:version}
+\caption{The job intensive categories the different problems are in}
+\label{tab:problems}
 \end{table}
 
 % tell which problem is I/O(disk?), memory or CPU insensitive
 % description of problems can be found on site
+% spectral-norm(maybe memory), n-body(maybe cpu)
+% cpu(mainly calculations): fannkuchredux
+% memory(lot of data stored or large data stored):mandelbrot, fasta, rev-comp, binarytrees (allocate/deallocate)
+% disk: fasta, rev-comp
 
+% pidigits*(maybe memory), regex-redux*(memory maybe disk), knucleotide*(memory and disk)
+
+% minimal run time of 7 seconds to get a good amount of datapoints, 0.6-0.7 seconds per measure thus like 10 datapoint minimal, the more the better but we have not that much time
+
+%-talk about amount of files and runtime of single run of all programs
+%-talk about runtime (7 seconds)
+%-talk about the reason programs/problems do not work and are leftout
+%-tell that the versions are this version because these were on the das
+%-talk about different types of problems (cpu, memory, disk)
+%-talk about compilation (flags, pre-compilation), why not measured
+%TODO:
