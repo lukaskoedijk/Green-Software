@@ -9,6 +9,7 @@ from sklearn.preprocessing import StandardScaler
 from scipy.stats import shapiro
 from scipy.stats import ks_2samp
 from scipy.stats import mannwhitneyu
+from scipy.stats import ttest_ind
 
 port=sys.argv[1]
 test=sys.argv[2]
@@ -48,7 +49,7 @@ for i, row in df_times.iterrows():
     data = []
     names = []
     for r in rows:
-        data.append([r['time(ms)'], r['Joule(surface)']])
+        data.append([r['time(ms)'], float('%.3g' % r['Joule(surface)'])])
         names.append(r['Name'])
     total.append(data)
     totalnames.append(filename)
@@ -73,7 +74,7 @@ if test == '1':
                     if allnames[i2][point] not in df_outlier.Name.values:
                         value2.append(total[i2][point][1])
                 d, p = ks_2samp(value1, value2)
-                if p > 0.05:
+                if p >= 0.05:
                     print("Same distribution:", name1, name2, d, p)
                     count += 1
                     plt.figure()
@@ -192,12 +193,15 @@ elif test == '2':
         
         val1, val2 = [], []
         for j in range(len(d)):
+            #20 for node28, 13 for node29
             if  int(allnames[total.index(d)][j].split(".")[-2]) >= 13:
                 val1.append(d[j][1])
             else:
                 val2.append(d[j][1])
-        d2, p2 = ks_2samp(val1, val2)
-        if p2 > 0.05:
+        #d2, p2 = ks_2samp(val1, val2)
+        u1, p1 = mannwhitneyu(val1, val2, alternative='less')
+        u2, p2 = mannwhitneyu(val1, val2, alternative='greater')
+        if p1 >= 0.05 and p2 >= 0.05:
             Same += 1
 
         if 0 in label and 1 in label and 2 not in label:
@@ -212,11 +216,14 @@ elif test == '2':
                     group2.append(int(allnames[total.index(d)][i].split(".")[-2]))
                     value2.append(d[i][1])
         
-            if (max(group1) <= 22 and min(group1) >= 13) or (max(group2) <= 22 and min(group2) >= 13):
+            #20 for node28, 13 for node29
+            if (max(group1) < 13 and min(group2) >= 13) or (max(group2) < 13 and min(group1) >= 13):
                 countTime += 1
                 diff.append([totalnames[total.index(d)]])
-                d, p = ks_2samp(value1, value2)
-                if p > 0.05:
+                #d, p = ks_2samp(value1, value2)
+                u1, p1 = mannwhitneyu(value1, value2, alternative='less')
+                u2, p2 = mannwhitneyu(value1, value2, alternative='greater')
+                if p1 >= 0.05 and p2 >= 0.05:
                     countSame += 1
             else:
                 print(group1, group2)
@@ -253,6 +260,7 @@ elif test == '3':
         statE, pE = shapiro(dataE)
         statT, pT = shapiro(dataT)
         if pE < 0.01:
+            #print(pE, statE)
             notNormalE += 1
         if pT < 0.01:
             notNormalT += 1
@@ -303,15 +311,19 @@ elif test == '4':
             if (min(group1) >= 13 and max(group2) < 15) or (min(group2) >= 13 and max(group1) < 15):
                 groupTime += 1
                 diff.append([totalnames[total.index(d)]])
-                d, p = ks_2samp(value1, value2)
-                if p > 0.05:
+                #d, p = ks_2samp(value1, value2)
+                u1, p1 = mannwhitneyu(value1, value2, alternative='less')
+                u2, p2 = mannwhitneyu(value1, value2, alternative='greater')
+                if p1 >= 0.05 and p2 >= 0.05:
                     countSame += 1
         if port == '3':
             if (min(group1) >= 18 and max(group2) < 20) or (min(group2) >= 18 and max(group1) < 20):
                 groupTime += 1
                 diff.append([totalnames[total.index(d)]])
-                d, p = ks_2samp(value1, value2)
-                if p > 0.05:
+                #d, p = ks_2samp(value1, value2)
+                u1, p1 = mannwhitneyu(value1, value2, alternative='less')
+                u2, p2 = mannwhitneyu(value1, value2, alternative='greater')
+                if p1 >= 0.05 and p2 >= 0.05:
                     countSame += 1
 
     print("The amount of 2 clusters based on measure moment are:", groupTime)
@@ -322,7 +334,10 @@ elif test == '4':
 
 elif test == '5':
     samedist = []
+    samedist2 = []
     count = 0
+    count2 = 0
+    countTest = 0
     for d1 in total:
         for i2 in range(total.index(d1)+1, len(total)):
             name1 = totalnames[total.index(d1)]
@@ -336,12 +351,17 @@ elif test == '5':
                 for point in range(len(total[i2])):
                     if allnames[i2][point] not in df_outlier.Name.values:
                         value2.append(total[i2][point][1])
-                
+            
                 u1, p1 = mannwhitneyu(value1, value2, alternative='less')
                 u2, p2 = mannwhitneyu(value1, value2, alternative='greater')
-                if p1 < 0.05 and p2 < 0.05:
-                    print("Same median:", name1, name2, d, p)
+                s, p = ks_2samp(value1, value2)
+                countTest += 1
+                if p1 >= 0.05 and p2 >= 0.05:
+                    #print("Same median:", name1, name2, p1, p2)
                     count += 1
+                    if p > 0.05:
+                        count2 += 1
+                        samedist2.append([name1, name2, p])
                     plt.figure()
                     plt.subplot(211)
                     y1 = [y[1] for y in d1]
@@ -364,11 +384,17 @@ elif test == '5':
                     plt.savefig(path + '/graphs' + port + '/samedist/port' + port + '.mann.' + name1 + '-' + name2 + '.png')
                     plt.close()
                     
-                    samedist.append([name1, name2, d, p])
+                    samedist.append([name1, name2, p1, p2])
     print("The amount of programs that have the same distribution:", count)
+    print("Total count:", countTest)
 
-    df = pandas.DataFrame.from_records(samedist, columns=['Program1', 'Program2', 'd', 'p'])
+    df = pandas.DataFrame.from_records(samedist, columns=['Program1', 'Program2', 'p1', 'p2'])
     df.to_csv(path + '/graphs' + port + '/samedist/port' + port + 'same_distribution.csv')
+
+    print("The amount of programs that have the same distribution:", count2)
+
+    df2 = pandas.DataFrame.from_records(samedist2, columns=['Program1', 'Program2', 'p'])
+    df2.to_csv(path + '/graphs' + port + '/samedist/port' + port + 'same_distribution2.csv')
 
 
 #use 2 for secondary clusters and len(total)/2 otherwise

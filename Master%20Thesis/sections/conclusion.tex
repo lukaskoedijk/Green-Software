@@ -1,6 +1,25 @@
 \chapter{Conclusion}
 \label{ch:conclusion}
 
+\section{Conclusion}
+(1) \textbf{Is there a difference in the energy consumption of software projects in different programming languages that have the same functionality}
+\begin{itemize}
+\item Hypothesis: There is no difference in the energy consumption of software projects in different programming languages that have the same functionality.
+\item Alternative hypothesis: There is a difference in the energy consumption of software projects in different programming languages that have the same functionality.
+\item Method: Using twice the one sided Mann Whitney U test where in both cases the null hypothesis is that the distributions are the same but the alternative hypothesis is that one distribution is greater or less.
+\item Result: For \textit{node28} in the most cases, 294 of 306 cases, we can reject the null hypothesis, but in 12 cases we can not. This is roughly 4\% and in these cases we cannot reject the null hypothesis. Which does not mean that they are not different, maybe the test is not powerful enough. For \textit{node29} the numbers change a bit, there we cannot reject the null hypothesis in 30 of the 306 cases. Which is roughly 10\%.
+\item Conclusion: For most cases we reject the null hypothesis and accept the alternative hypothesis. Thus for most cases there is a difference in the energy consumption of software projects in different programming languages that have the same functionality.\\
+\end{itemize}
+
+
+(2) \textbf{Is there a difference in energy consumption of different software projects (in the same programming language) that have the same functionality}
+\begin{itemize}
+\item Hypothesis: There is no difference in energy consumption of different software projects, in the same programming language, that have the same functionality.
+\item Alternative hypothesis: There is a difference in energy consumption of different software projects, in the same programming language, that have the same functionality.
+\item Method: Compare programs if they have the same language and solve the same problem. Perform twice the one sided Mann Whitney U test where in both cases the null hypothesis is that the distributions are the same but the alternative hypothesis is that one distribution is greater or less.
+\item Result: We cannot reject the null hypothesis in 24 of 479 (roughly 5\%) cases for the \textit{node28} and 50 of 479 (roughly 10\%) cases for the \textit{node29}.
+\item Conclusion: We for most cases reject the null hypothesis and accept the alternative hypothesis. Thus in most cases there is a difference in the energy consumption of software projects that are in the same programming language and solve the same problem.
+\end{itemize}
 
 
 \section{Future work}

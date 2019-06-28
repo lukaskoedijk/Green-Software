@@ -5,6 +5,7 @@ from scipy.stats import pearsonr
 from scipy.stats import kendalltau
 import numpy
 import matplotlib.pyplot as plt
+from scipy.stats import mannwhitneyu
 
 path = os.getcwd()
 df2 = pandas.read_csv(path + "/newresults2.csv", engine='python')
@@ -22,8 +23,9 @@ language = ['java', 'javascript', 'python3', 'php', 'cs', 'yarv', 'c-flags', 'c-
 total = 0
 same  = 0
 ptotal = {'Binarytrees':{'Java':[[],[]], 'JavaScript':[[],[]], 'Python3':[[],[]], 'PHP':[[],[]], 'Cs':[[],[]], 'Yarv':[[],[]], 'C-flags':[[],[]], 'C-noflags':[[],[]], 'C++-flags':[[],[]], 'C++-noflags':[[],[]]}, 'Fannkuchredux':{'Java':[[],[]], 'JavaScript':[[],[]], 'Python3':[[],[]], 'PHP':[[],[]], 'Cs':[[],[]], 'Yarv':[[],[]], 'C-flags':[[],[]], 'C-noflags':[[],[]], 'C++-flags':[[],[]], 'C++-noflags':[[],[]]}, 'Fasta':{'Java':[[],[]], 'JavaScript':[[],[]], 'Python3':[[],[]], 'PHP':[[],[]], 'Cs':[[],[]], 'Yarv':[[],[]], 'C-flags':[[],[]], 'C-noflags':[[],[]], 'C++-flags':[[],[]], 'C++-noflags':[[],[]]}, 'Mandelbrot':{'Java':[[],[]], 'JavaScript':[[],[]], 'Python3':[[],[]], 'PHP':[[],[]], 'Cs':[[],[]], 'Yarv':[[],[]], 'C-flags':[[],[]], 'C-noflags':[[],[]], 'C++-flags':[[],[]], 'C++-noflags':[[],[]]}, 'Nbody':{'Java':[[],[]], 'JavaScript':[[],[]], 'Python3':[[],[]], 'PHP':[[],[]], 'Cs':[[],[]], 'Yarv':[[],[]], 'C-flags':[[],[]], 'C-noflags':[[],[]], 'C++-flags':[[],[]], 'C++-noflags':[[],[]]}, 'Revcomp':{'Java':[[],[]], 'JavaScript':[[],[]], 'Python3':[[],[]], 'PHP':[[],[]], 'Cs':[[],[]], 'Yarv':[[],[]], 'C-flags':[[],[]], 'C-noflags':[[],[]], 'C++-flags':[[],[]], 'C++-noflags':[[],[]]}, 'Spectralnorm':{'Java':[[],[]], 'JavaScript':[[],[]], 'Python3':[[],[]], 'PHP':[[],[]], 'Cs':[[],[]], 'Yarv':[[],[]], 'C-flags':[[],[]], 'C-noflags':[[],[]], 'C++-flags':[[],[]], 'C++-noflags':[[],[]]}}
-#xtotal = {'Binarytrees':[], 'Fannkuchredux':[], 'Fasta':[], 'Mandelbrot':[], 'Nbody':[], 'Revcomp':[], 'Spectralnorm':[]}
-#color = {'Binarytrees':[], 'Fannkuchredux':[], 'Fasta':[], 'Mandelbrot':[], 'Nbody':[], 'Revcomp':[], 'Spectralnorm':[]}
+xtotal = {'Binarytrees':[], 'Fannkuchredux':[], 'Fasta':[], 'Mandelbrot':[], 'Nbody':[], 'Revcomp':[], 'Spectralnorm':[]}
+color = {'Binarytrees':[], 'Fannkuchredux':[], 'Fasta':[], 'Mandelbrot':[], 'Nbody':[], 'Revcomp':[], 'Spectralnorm':[]}
+ptotalProgram = {'Binarytrees':[], 'Fannkuchredux':[], 'Fasta':[], 'Mandelbrot':[], 'Nbody':[], 'Revcomp':[], 'Spectralnorm':[]}
 for i, row in df_times.iterrows():
     total += 1
     vals2, vals3 = [], []
@@ -39,10 +41,12 @@ for i, row in df_times.iterrows():
             if len(vals3) == 22:
                 break
 
-    d, p = ks_2samp(vals2, vals3)
-    if p > 0.05:
+    #d, p = ks_2samp(vals2, vals3)
+    u1, p1 = mannwhitneyu(vals2, vals3, alternative='less')
+    u2, p2 = mannwhitneyu(vals2, vals3, alternative='greater')
+    if p1 >= 0.05 and p2 >= 0.05:
         same += 1
-        print("Same distribution name, p:", filename, p)
+        print("Same distribution name, p:", filename, p1, p2)
 
 #    pvals = []
 #    for j in range(500):
@@ -55,40 +59,43 @@ for i, row in df_times.iterrows():
 #        pvals.append(p)
 #    av = numpy.average(pvals)
 #    ptotal.append(av)
-#r, p = pearsonr(vals2, vals3)
-#tau, p = kendalltau(vals2, vals3)
+    r, p = pearsonr(vals2, vals3)
+    tau, p = kendalltau(vals2, vals3)
+
     ptotal[row['Problem']][row['Language']][0].append(vals2)
     ptotal[row['Problem']][row['Language']][1].append(vals3)
-#    if row['Language'] == 'Java':
-#        color[row['Problem']].append('blue')
-#        xtotal[row['Problem']].append(0)
-#    elif row['Language'] == 'JavaScript':
-#        color[row['Problem']].append('red')
-#        xtotal[row['Problem']].append(1)
-#    elif row['Language'] == 'Python3':
-#        color[row['Problem']].append('green')
-#        xtotal[row['Problem']].append(2)
-#    elif row['Language'] == 'PHP':
-#        color[row['Problem']].append('purple')
-#        xtotal[row['Problem']].append(3)
-#    elif row['Language'] == 'Cs':
-#        color[row['Problem']].append('yellow')
-#        xtotal[row['Problem']].append(4)
-#    elif row['Language'] == 'Yarv':
-#        color[row['Problem']].append('cyan')
-#        xtotal[row['Problem']].append(5)
-#    elif row['Language'] == 'C-flags':
-#        color[row['Problem']].append('magenta')
-#        xtotal[row['Problem']].append(6)
-#    elif row['Language'] == 'C-noflags':
-#        color[row['Problem']].append('black')
-#        xtotal[row['Problem']].append(7)
-#    elif row['Language'] == 'C++-flags':
-#        color[row['Problem']].append('brown')
-#        xtotal[row['Problem']].append(8)
-#    elif row['Language'] == 'C++-noflags':
-#        color[row['Problem']].append('gray')
-#        xtotal[row['Problem']].append(9)
+
+    ptotalProgram[row['Problem']].append(tau)
+    if row['Language'] == 'Java':
+        color[row['Problem']].append('blue')
+        xtotal[row['Problem']].append(0)
+    elif row['Language'] == 'JavaScript':
+        color[row['Problem']].append('red')
+        xtotal[row['Problem']].append(1)
+    elif row['Language'] == 'Python3':
+        color[row['Problem']].append('green')
+        xtotal[row['Problem']].append(2)
+    elif row['Language'] == 'PHP':
+        color[row['Problem']].append('purple')
+        xtotal[row['Problem']].append(3)
+    elif row['Language'] == 'Cs':
+        color[row['Problem']].append('yellow')
+        xtotal[row['Problem']].append(4)
+    elif row['Language'] == 'Yarv':
+        color[row['Problem']].append('cyan')
+        xtotal[row['Problem']].append(5)
+    elif row['Language'] == 'C-flags':
+        color[row['Problem']].append('magenta')
+        xtotal[row['Problem']].append(6)
+    elif row['Language'] == 'C-noflags':
+        color[row['Problem']].append('black')
+        xtotal[row['Problem']].append(7)
+    elif row['Language'] == 'C++-flags':
+        color[row['Problem']].append('brown')
+        xtotal[row['Problem']].append(8)
+    elif row['Language'] == 'C++-noflags':
+        color[row['Problem']].append('gray')
+        xtotal[row['Problem']].append(9)
 
 
 print("Total files:", total)
@@ -130,13 +137,20 @@ for key in ptotal.keys():
             c.append('gray')
             x.append(9)
     
-    
-    
     plt.figure()
     plt.scatter(x, y, c=c)
     plt.xlabel("Language")
-    plt.ylabel("Pearson coefficient")
+    plt.ylabel("Correlation coefficient")
     plt.xticks([0,1,2,3,4,5,6,7,8,9], language)
     plt.ylim(bottom=-1, top=1)
     plt.savefig(path + '/kendall.lang_' + key + '.png')
+    plt.close()
+
+    plt.figure()
+    plt.scatter(xtotal[key], ptotalProgram[key], c=color[key])
+    plt.xlabel("Language")
+    plt.ylabel("Correlation coefficient")
+    plt.xticks([0,1,2,3,4,5,6,7,8,9], language)
+    plt.ylim(bottom=-1, top=1)
+    plt.savefig(path + '/kendall_' + key + '.png')
     plt.close()

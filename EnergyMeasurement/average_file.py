@@ -49,12 +49,12 @@ for i, row in df_times.iterrows():
         total.append(r['Joule(surface)'])
         alltotal.append(r['allJoule(surface)'])
         totaltime.append(r['time(ms)'])
-    mean = numpy.mean(total)
-    std = (numpy.std(total)/mean)*100
+    mean = '%.3g' % numpy.mean(total)
+    std = '%.3g' % ((numpy.std(total)/numpy.mean(total))*100)
 
 #'%s' % float('%.3g' % std)
 #round(std, 3) both not working for 0. numbers
-    result.append((filename, mean, std, numpy.std(total), min(total), max(total), numpy.mean(alltotal),  numpy.mean(totaltime), (numpy.mean(total)/numpy.mean(totaltime)), len(total)))
+    result.append((filename, mean, std, '%.3g' % numpy.std(total), '%.3g' % min(total), '%.3g' % max(total), '%.3g' % numpy.mean(alltotal),  '%.13g' % numpy.mean(totaltime), '%.3g' % (numpy.mean(total)/numpy.mean(totaltime)), len(total)))
 
 print("Outlier count not inclueded:", out_count)
 

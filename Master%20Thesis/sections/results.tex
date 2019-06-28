@@ -1,22 +1,165 @@
 \chapter{Results}
 \label{ch:results}
-In this chapter, we present the results of our experiment. 
+% In this chapter, we present the results of our experiment. 
 
-table with languages
-table with programs averages
-figure per problem
-example figure of a problem with different programs in same language
-anomalies
-same distribution
+% table with languages
+% table with programs averages
+% figure per problem
+% example figure of a problem with different programs in same language
+% anomalies
+% same distribution
 
-without flags, takes more energy
+% without flags, takes more energy
 
-For binarytrees: php cosumes the most, python ruby and csharp also relatively bad 
-For fannkuchredux: php python ruby really bad, javascript also not so good
-For fasta: php python ruby javascript not good
-For mandelbrot: python php ruby not good
-For nbody: python php ruby not good
-For revcomp: not one that really stands out, though c++-noflags has a huge range thus potentially really bad
-For spectralnorm: python least good, php ruby also not good
+% For binarytrees: php cosumes the most, python ruby and csharp also relatively bad 
+% For fannkuchredux: php python ruby really bad, javascript also not so good
+% For fasta: php python ruby javascript not good
+% For mandelbrot: python php ruby not good
+% For nbody: python php ruby not good
+% For revcomp: not one that really stands out, though c++-noflags has a huge range thus potentially really bad
+% For spectralnorm: python least good, php ruby also not good
 
-Overall php, python and ruby not good conform the energy consumption
+% Overall php, python and ruby not good conform the energy consumption
+\section{Anomalies}
+We checked for anomalies using DBSCAN. An example of the results we got from this approach is shown in figure \ref{fig:anomalies}. There we can see in the top graph the distribution of measurements for a single program on one of the two nodes on the DAS. The red dots are the measurements DBSCAN labelled as an anomaly. In the bottom graph we see from every measurement point its distance to its fourth nearest neighbour. This is sorted and the red dot is the choice of the input variable of DBSCAN called \textit{eps} and is calculated by finding the first valley.\\
+
+For \textit{node28} there were a total of 345 anomalies from 7263 measurement points, which is roughly 4.8\%. In the measurements from \textit{node29} there were a total of 305 anomalies from 5918 measurement points found, which is roughly 5.1\%. Even though there are more anomalies found then programs, there was not for every program an anomaly detected. All the anomalies found were removed from further results.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.6\textwidth]{graphs/port3-bdscan-java-3-problem0-eps1-27.png}
+    \caption{In the top graph the distribution of measurements from program java-3 on the Binarytrees problem on \textit{node28} is shown. The bottom graph shows the sorted fourth nearest neighbour graph. The red dots at the top are measurements labelled as an anomaly and at the bottom is the choice for the \textit{eps}-value.}
+    \label{fig:anomalies}
+\end{figure}
+
+\subsection{Two clusters}
+During the processing of the information from the anomaly detection we saw only on \textit{node29} that some programs appeared to have two clusters. We looked further into this and found that where we found two clusters it seemed to follow an ordering based on measurement moment. With clusters based on measurement moment we mean that in the first cluster all measurements were done before a certain date and in the second cluster after that date. The DBSCAN algorithm found for \textit{node28} seven times two clusters in the measurements for a single program where zero follow measurement moment and 58 times for \textit{node29} where 53 follow measurement moment. At \textit{node29} for all of these 53 programs the null hypothesis that there form the same distribution can be rejected. We then instead of letting a clustering algorithm cluster first and then check if the clusters follow the measurement moment, clustered ourselves based on the measurement moment. We find that for \textit{node28} 218 programs and for \textit{node29} 41 programs the null hypothesis that the two measurement moment clusters are from the same population can't be rejected. Because of the large amount of programs where the clusters were not from the same population at \textit{node29}, we decided to run another clustering algorithm named k-means. We set the amount of clusters the k-means algorithm will search for at two, because we wanted to find these two measurement moment clusters. We then found that there were zero programs that had clusters based on measurement moment for \textit{node28} and 63 programs for \textit{node29}. These 63 programs all rejected the null hypothesis that the two clusters were form the same population. When looking at the programming languages and problems these 63 programs entail, we saw a good representation of the programming languages and different problems. Nothing that would make us suspect some programming language or problem specific cause for this difference. There still could be some other commonality between these programs, but it is too difficult to find this between the 63 programs. Therefor this is were we left it with on \textit{node28} no difference in the measurement moment and on \textit{node29} only a difference in a part of the programs.
+
+\section{Programming Languages}
+After all the measurements were done we wanted to compare the programming languages. This was done by filtering out one problem and selecting every measurement of a program that solves this problem. This resulted in a lot of points per language and these are plotted in a box-plot. There are seven problems and thus also seven box-plots. An example of one of these box-plots is shown in figure \ref{fig:box-example}. Here the box is from the first quartile till the third quartile and a line at the median. The dots are measurement points laying outside the fences that are located at $Q1 - 1.5(Q3-Q1)$ and $Q3 + 1.5(Q3-Q1)$. The whiskers show the range of points that are outside the box but inside the fences. All the graphs are shown in appendix \ref{app:node28} for \textit{node28} and appendix \ref{app:node29} for \textit{node29}.\\
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.6\textwidth]{graphs/fannkuchredux_BOXoverview3.png}
+    \caption{The box plot of the different programs in a programming language for the problem Fannkuchredux on \textit{node28}.}
+    \label{fig:box-example}
+\end{figure}
+
+In the box-plot we can't always clearly see which programming language is using less energy. To find out what the relationship is between two programming languages we used twice the one-sided Mann Whitney U test. This we calculated for every language with every other language and because of the fact that if one is smaller the other should be larger this table should be inverted around the diagonal zero's, thus a \textit{+} changes into a \textit{-}. An example of this is shown in table \ref{tab:lang-example}. In that table a \textit{+} means that the programming language on the row is performing better than the programming language on the column, i.e. the programming language on the row consumes less energy. The \textit{-} means the opposite, a \textit{0} means equal and \textit{unknown} means that both one-sided Mann Whitney U test could not be rejected. All the tables are shown in appendix \ref{app:node28} for \textit{node28} and appendix \ref{app:node29} for \textit{node29}.\\
+
+\begin{table}[h]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|}
+\hline
+ & \multicolumn{1}{l|}{Java} & \multicolumn{1}{l|}{JavaScript} & \multicolumn{1}{l|}{Python} & \multicolumn{1}{l|}{PHP} & \multicolumn{1}{l|}{C\#} & \multicolumn{1}{l|}{Ruby} & \multicolumn{1}{l|}{C-flags} & \multicolumn{1}{l|}{C-noflags} & \multicolumn{1}{l|}{C++-flags} & \multicolumn{1}{l|}{C++-noflags} \\ \hline
+Java& 0 & + & + & + & + & + & - & + & - & +\\ \hline
+JavaScript & - & 0 & + & + & + & + & - & + & - & +\\ \hline
+Python& - & - & 0 & - & - & - & - & - & - & -\\ \hline
+PHP & - & - & + & 0 & - & - & - & - & - & -\\ \hline
+C\# & - & - & + & + & 0 & + & - & + & - & +\\ \hline
+Ruby & - & - & + & + & - & 0 & - & - & - & -\\ \hline
+C-flags & + & + & + & + & + & + & 0 & + & Unknown & +\\ \hline
+C-noflags & - & - & + & + & - & + & - & 0 & - & +\\ \hline
+C++-flags & + & + & + & + & + & + & Unknown & + & 0 & +\\ \hline
+C++-noflags & - & - & + & + & - & + & - & - & - & 0\\ \hline
+\end{tabular}%
+}
+\caption{The comparison of the different languages for the Nbody problem on \textit{node28}. A \textit{+} means that the language on the row has a lower energy consumption then the language on the column, the opposite for \textit{-}, and the \textit{Unknown} means that we could not reject the null hypothesis.}
+\label{tab:lang-example}
+\end{table}
+
+Using these tables we can see which language is performing better compared to others, but only for a single problem at a time. To give a total overview of problems and programming languages we calculated a score for every programming language combination. An one was added when there was a plus, an one was subtracted when there was a minus and nothing was added or subtracted in the case of a zero or unknown. With the use of these scores we made a heatmap, where green means a high score and red a low. This heatmap is shown in figure \ref{fig:heatmap_L}. Here the programming languages with a lot of green in their row, or a lot of red in their column, are performing better than most programming languages. We also wanted to see which programming language combination resulted the most in an \textit{unknown}, thus which combination could not reject the null hypothesis the most. For this we also created a heatmap where a one was added for every \textit{unknown} found. This resulted in figure \ref{fig:heatmap}.
+
+% Looking at the tables the ordering for the problem Binarytrees is: C++-flags $<$ Java $<$ C-flags $<$ C-noflags $<$ JavaScript $<$ C++-noflags $<$ C\# $<$ Ruby $<$ Python $<$ PHP. \\
+% The ordering for Fannkuchredux is: Java $<$ C++-flags $<$ C-flags $<$ C-noflags $<$ JavaScript $<$ C\# $<$ C++-noflags $<$ PHP $<$ Python $<$ Ruby. \\
+% The ordering for Fasta is: C-flags $<$ C++-flags $<$ Java $<$ C\# $<$ C-noflags $<$ C++-noflags $<$ JavaScript $<$ PHP $<$ Ruby $<$ Python. \\
+% The ordering for Mandelbrot is: (JavaScript = C-flags = C++-flags) $<$ Java $<$ (C\# = C-noflags) $<$ C++-noflags $<$ PHP $<$ (Python = Ruby). \\
+% The ordering for Nbody is: (C-flags = C++-flags) $<$ Java $<$ JavaScript $<$ C\# $<$ C-noflags $<$ C++-noflags $<$ Ruby $<$ PHP $<$ Python. \\
+% The ordering for Revcomp is: PHP $<$ C-flags $<$ (C-noflags = C++-flags = C\#) $<$ Java $<$ C++-noflags $<$ Python $<$ Ruby $<$ JavaScript. \\
+% The ordering for Spectralnorm is: C-flags $<$ C++-flags $<$ (C++-noflags = C\#) $<$ C-noflags $<$ JavaScript $<$ Java $<$ (PHP = Ruby) $<$ Python.\\
+% These are the orders for the data from \textit{node28}. The orders for the data form \textit{node29} are almost the same, there are only more languages that are equal concerning the energy consumption.
+
+\begin{figure}[h]
+    % \begin{center}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth, height=6cm]{graphs/heatmapL3.png}
+        \caption{The heatmap of \textit{node28} of the relationship between the programming languages for all problems combined. A green box means that the language on the row has a lower energy consumption over all the programs than the language in the column, red is the reverse.}
+        \label{fig:heatmap_L3}
+    \end{subfigure}
+    \hfill        
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth, height=6cm]{graphs/heatmapL2.png}
+        \caption{The heatmap of \textit{node29} of the relationship between the programming languages for all problems combined. A green box means that the language on the row has a lower energy consumption over all the programs than the language in the column, red is the reverse.}
+        \label{fig:heatmap_L2}
+    \end{subfigure}
+    % \end{center}
+    \caption{}
+    \label{fig:heatmap_L}
+\end{figure}
+
+\begin{figure}[h]
+    % \begin{center}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth, height=6cm]{graphs/heatmap3.png}
+        \caption{The heatmap of \textit{node28} of the the amount of times we could not reject the null hypothesis for the relationship between the programming languages for all problems.}
+        \label{fig:heatmap_3}
+    \end{subfigure}
+    \hfill        
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth, height=6cm]{graphs/heatmap2.png}
+        \caption{The heatmap of \textit{node29} of the the amount of times we could not reject the null hypothesis for the relationship between the programming languages for all problems.}
+        \label{fig:heatmap_2}
+    \end{subfigure}
+    % \end{center}
+    \caption{}
+    \label{fig:heatmap}
+\end{figure}
+
+\section{Programs}
+When comparing programs that are written in one language and solve the same problem, we can also use a box-plot. An example of such a box plot is shown in figure \ref{fig:box-lang}. Here we can't always see which program is performing better concerning the energy consumption. Therefor we also used the one-sided Mann Whitney U test twice here. For some combination of two programs we weren't able to reject both the Mann Whitney U tests. All these program combinations and their \textit{p}-values are listed in table \ref{tab:programs_equal3} for \textit{node28} and in table \ref{tab:programs_equal2} for \textit{node29} in respectively appendix \ref{app:node28} and \ref{app:node29}. There were a total of 24 program combinations on \textit{node28} and 59 on \textit{node29} where the null hypothesises could not be rejected. We tried to also use Kolmogorov-Smirnov test to see if we would get less cases of uncertainty. This resulted in a total of 33 program combinations for \textit{node28} and 61 for \text{node29}. But when we look at the overlap we see that there are only 24 program combinations for \textit{node28} and 50 for \textit{node29}. Thus this second test removed the uncertainty of nine program combinations on \textit{node29}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.6\textwidth]{graphs/BOXGroup-java-problem0-3.png}
+    \caption{The box-plot for the programming language Java comparing the measurements of different programs that solve the Binarytrees problem and are measured on \textit{node28}.}
+    \label{fig:box-lang}
+\end{figure}
+
+\subsection{Code level}
+When looking at programs with a difference in the energy consumption from a code level perspective we find that.....
+
+\section{Additional Findings}
+\subsection{Hardware}
+Our measurements were run on two different nodes, which had different hardware specifics. To find out how big of an influence the node is we wanted to compare the measurements between the two node for a single program. We first used the one-sided Mann Whitney U test and found that for two programs we couldn't reject the null hypothesis that their from the same distribution. For most programs their energy consumption depends on which node they were run on. To see if only the height is different, but still follow the same trend we calculated the correlation. This correlation was calculated between the different programs and an example of the results is shown in figure \ref{fig:corr-example}. In this figure we have positive and negative numbers, this only shows the direction of the correlation. Thus the correlation number $0.7$ and $-0.7$ have the same correlation strength. All the other graphs of the other problems are shown in  appendix \ref{app:corr}. In all these graphs we see that most scores are low. Because the distribution of the programs are small we decided to check the correlation of all the measurements in one language for one problem. These are also all listed in \ref{app:corr} and an example is show here in figure \ref{fig:corr-lang-example}. There we see that in most cases the Kendall correlation score is higher.
+
+\begin{figure}[h]
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=1.1\textwidth]{graphs/kendall_Fasta.png}
+        \caption{The Kendall correlation score for every single program that solves the Fasta problem.}
+        \label{fig:corr-example}
+    \end{subfigure}
+    \hfill        
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=1.1\textwidth]{graphs/kendall-lang_Fasta.png}
+        \caption{The Kendall correlation score for every programming language that solves the Fasta problem.}
+        \label{fig:corr-lang-example}
+    \end{subfigure}
+    \caption{}
+    \label{fig:corr}
+\end{figure}
+
+\subsection{Time}
+Because of some statements in related work, we also wanted to look at the relationship between the energy consumption and the run time. We plotted every measurement from both the nodes in the same graph, where on the x-axis is the run time and on the y-axis the energy consumption. This graph is shown in figure \ref{fig:time}. Looking at this graph we see multiple lines in the relationship. We also see that a lower run time does not always mean that less energy is consumed. When calculating the Kendall correlation between the energy consumption and the run time we get $0.82$, which means high correlation according to the Guilford scale.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.6\textwidth]{graphs/time.png}
+    \caption{All the measurements from both the measurement nodes.}
+    \label{fig:time}
+\end{figure}
+
+
+

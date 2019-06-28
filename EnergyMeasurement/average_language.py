@@ -4,6 +4,7 @@ import numpy
 import matplotlib.pyplot as plt
 import sys
 from scipy.stats import mannwhitneyu
+from scipy.stats import ks_2samp
 
 port=sys.argv[1]
 print('port is:', port)
@@ -27,10 +28,10 @@ for x in language:
         if len(rows) == 0:
             values.append(("NaN", "NaN"))
         else:
-            mean = numpy.mean(rows)
-            median = numpy.median(rows)
-            std = (numpy.std(rows)/mean)*100
-            values.append((mean, median, std, min(rows), max(rows)))
+            mean = '%.3g' % numpy.mean(rows)
+            median = '%.3g' % numpy.median(rows)
+            std = '%.3g' % ((numpy.std(rows)/numpy.mean(rows))*100)
+            values.append([mean, median, std, '%.3g' % (min(rows)), '%.3g' % (max(rows))])
     result.append([x] + values)
 
 df_al = pandas.DataFrame.from_records(result, columns=labels)
@@ -48,7 +49,7 @@ for y in problems:
                 if x in row['Name']:
                     if row['Name'] not in df_outlier.Name.values:
                         lang.append(count)
-                        energy.append(row['Joule(surface)'])
+                        energy.append(float('%.3g' % row['Joule(surface)']))
                 count += 1
     plt.scatter(lang, energy, c='b', marker='.')
     plt.xlabel('Languages')
@@ -101,6 +102,7 @@ for y in problems:
     plt.close()
 
     order = []
+    index = 0
     for l in data:
         meanCompare = []
         for l2 in data:
@@ -112,13 +114,19 @@ for y in problems:
                 u1, p1 = mannwhitneyu(l, l2, alternative='less')
                 u2, p2 = mannwhitneyu(l, l2, alternative='greater')
                 if p1 < 0.05 and p2 < 0.05:
-                    meanCompare.append(0)
+                    meanCompare.append("Error")
                 elif p1 < 0.05:
                     meanCompare.append(1)
                 elif p2 < 0.05:
                     meanCompare.append(-1)
                 else:
-                    meanCompare.append("Undifined")
+                    u3, p3 = mannwhitneyu(l, l2, alternative='two-sided')
+                    if p3 < 0:
+                        meanCompare.append("Undifined")
+                    else:
+                        meanCompare.append("?")
+        print(y, index, meanCompare)
+        index += 1
         order.append(meanCompare.count(-1) + 1)
     print("Order for:", y, "is", order)
 

@@ -12,8 +12,6 @@ labels = ['Name', 'Joule(surface)', 'kWh(surface)', 'allJoule(surface)',
           'allkWh(surface)', 'time(ms)', 'time(string)']
 #labels = ['Name', 'time(ms)', 'time(string)']
 
-# probably making separate result directories for a single file,
-# because of running a program multiple times
 path = os.getcwd() + '/results/results'
 files = []
 idle2 = {}
