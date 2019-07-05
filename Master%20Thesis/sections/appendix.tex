@@ -657,4 +657,75 @@ c++-noflags-7.problem4 & c++-noflags-8.problem4 & 0.910 & 0.094 & Unknown\\ \hli
     \label{fig:corr-lang-spectralnorm}
 \end{figure}
 
+%------------------------------------------------------------------
+%------------------------------------------------------------------
+%------------------------------------------------------------------
+%------------------------------------------------------------------
+%--------------------HERE TO NEXT CHAPTER--------------------------
+%------------------------------------------------------------------
+%------------------------------------------------------------------
+%------------------------------------------------------------------
+%------------------------------------------------------------------
+
+\chapter{Code-level}
+\label{app:code-level}
+
+\begin{table}[h]
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|}
+\hline
+Better program & Worse program & Better code-level & Worse code-level \\ \hline
+\multirow{3}{*}{python3-1.problem0} & \multirow{3}{*}{python3-2.problem0} & Body below the condition of if statement & Condition and body of if statement on same line \\ \cline{3-4} 
+ &  & More functions and main function & Less functions and no main function \\ \cline{3-4} 
+ &  & Uses map & Doesn't use map \\ \hline
+\multirow{2}{*}{python3-4.problem1} & \multirow{2}{*}{python3-1.problem1} & Doesn't use classes & Uses classes \\ \cline{3-4} 
+ &  & \begin{tabular}[c]{@{}l@{}}Uses libraries, math.factorial, itertools.islice\\ and itertools.starmap\end{tabular} & Doesn't use libraries \\ \hline
+\multirow{2}{*}{python3-3.problem2} & \multirow{2}{*}{python3-2.problem2} & Uses while-loop & Uses for-loop \\ \cline{3-4} 
+ &  & Uses no additional function & Uses additional function \\ \hline
+\multirow{2}{*}{python3-2.pronlem4} & \multirow{2}{*}{python3-1.problem4} & Uses library math.sqrt & Doesn't use library math.sqrt \\ \cline{3-4} 
+ &  & Less depth in main var & More depth in main var \\ \hline
+\multirow{2}{*}{python3-6.problem5} & \multirow{2}{*}{python3-4.problem5} & Uses library itertools.starmap & Doesn't use library itertools.starmap \\ \cline{3-4} 
+ &  & Reading data from stdin.buffer & Reading data from stdin \\ \hline
+\multirow{3}{*}{python3-5.problem6} & \multirow{3}{*}{python3-6.problem6} & More separate functions & Less separate functions \\ \cline{3-4} 
+ &  & Separate for-loop and list comprehension & Nested list comprehension \\ \cline{3-4} 
+ &  & Multithreading & Not multithreading \\ \hline
+php-2.problem0 & php-3.problem0 & Uses classes & Doesn't use classes \\ \hline
+php-3.problem1 & php-1.problem1 & Uses for-loop & Uses while true \\ \hline
+\multirow{3}{*}{php-4.problem2} & \multirow{3}{*}{php-2.problem2} & Less bigger functions & More smaller functions \\ \cline{3-4} 
+ &  & Uses for-each-loop & Use for-loop \\ \cline{3-4} 
+ &  & Uses output buffer and implicit flushing & Doesn't use output buffer and implicit flushing \\ \hline
+\multirow{2}{*}{php-3.problem3} & \multirow{2}{*}{php-1.problem3} & Doesn't use output buffer and implicit flushing & Uses output buffer and implicit flushing \\ \cline{3-4} 
+ &  & Multithreading & Not multithreading \\ \hline
+\multirow{2}{*}{php-1.problem5} & \multirow{2}{*}{php-3.problem5} & Uses echo & Uses fwrite \\ \cline{3-4} 
+ &  & Not multithreading & Multithreading \\ \hline
+php-3.problem6 & php-2.problem6 & Multithreading & Not multithreading \\ \hline
+\multirow{3}{*}{yarv-4.problem0} & \multirow{3}{*}{yarv-3.problem0} & Uses return-statement in body of if-statement & \begin{tabular}[c]{@{}l@{}}Uses return-statement and then if-statement\\ on same line\end{tabular} \\ \cline{3-4} 
+ &  & Doesn't use garbage collection & Uses garbage collection \\ \cline{3-4} 
+ &  & Uses .each do & Uses while \\ \hline
+\multirow{2}{*}{yarv-1.problem1} & \multirow{2}{*}{yarv-2.problem1} & \begin{tabular}[c]{@{}l@{}}Assigns values to var in condition of\\ if and while statements\end{tabular} & \begin{tabular}[c]{@{}l@{}}Doesn't assign values to var in condition of\\ if and while statements\end{tabular} \\ \cline{3-4} 
+ &  & Uses while & Uses upto \\ \hline
+yarv-3.problem2 & yarv-2.problem2 & Uses classes & Doesn't use classes \\ \hline
+\multirow{2}{*}{yarv-6.problem3} & \multirow{2}{*}{yarv-1.problem3} & Uses classes and functions & Doesn't use classes \\ \cline{3-4} 
+ &  & Multithreading & Not multithreading \\ \hline
+\multirow{2}{*}{yarv-3.problem5} & \multirow{2}{*}{yarv-2.problem5} & Multithreading & Not multithreading \\ \cline{3-4} 
+ &  & Read input via: \$stdin.each\_line(‘\textgreater{}’) & Read input via: STDIN.each \\ \hline
+\multirow{2}{*}{yarv-5.problem6} & \multirow{2}{*}{yarv-1.problem6} & Uses .each do & Uses for-loop \\ \cline{3-4} 
+ &  & Multithreading & Not multithreading \\ \hline
+\end{tabular}%
+}
+\caption{The differences we found when looking at two programs that had a difference in their energy consumption. The better program consumes less energy then the worse programs.}
+\label{tab:code-level}
+\end{table}
+
+
+% \section{Programs used for comparison}
+% \lstinputlisting[language=Python, breaklines=true]{programs/binarytrees.python3-1.py}
+\lstinputlisting[language=Python, breaklines=true, caption=The program that solves the nth prime number using a while loop.]{programs/while.py}
+
+\lstinputlisting[language=Python, breaklines=true, caption=The program that solves the nth prime number using a for loop.]{programs/for.py}
+
+\lstinputlisting[language=Python, breaklines=true, caption=The program that solves the nth prime number using if-statements where the body and the condition are on the same line.]{programs/sameline.py}
+
+\lstinputlisting[language=Python, breaklines=true, caption=The program that solves the nth prime number using if-statements where the body and the condition are on a different line.]{programs/diffline.py}
+
 \end{appendices}

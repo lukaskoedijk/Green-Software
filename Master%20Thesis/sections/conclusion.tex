@@ -1,26 +1,36 @@
 \chapter{Conclusion}
 \label{ch:conclusion}
 
-\section{Conclusion}
-(1) \textbf{Is there a difference in the energy consumption of software projects in different programming languages that have the same functionality}
-\begin{itemize}
-\item Hypothesis: There is no difference in the energy consumption of software projects in different programming languages that have the same functionality.
-\item Alternative hypothesis: There is a difference in the energy consumption of software projects in different programming languages that have the same functionality.
-\item Method: Using twice the one sided Mann Whitney U test where in both cases the null hypothesis is that the distributions are the same but the alternative hypothesis is that one distribution is greater or less.
-\item Result: For \textit{node28} in the most cases, 294 of 306 cases, we can reject the null hypothesis, but in 12 cases we can not. This is roughly 4\% and in these cases we cannot reject the null hypothesis. Which does not mean that they are not different, maybe the test is not powerful enough. For \textit{node29} the numbers change a bit, there we cannot reject the null hypothesis in 30 of the 306 cases. Which is roughly 10\%.
-\item Conclusion: For most cases we reject the null hypothesis and accept the alternative hypothesis. Thus for most cases there is a difference in the energy consumption of software projects in different programming languages that have the same functionality.\\
-\end{itemize}
+% \section{Conclusion}
+% (1) \textbf{Is there a difference in the energy consumption of software projects in different programming languages that have the same functionality}
+% \begin{itemize}
+% \item Hypothesis: There is no difference in the energy consumption of software projects in different programming languages that have the same functionality.
+% \item Alternative hypothesis: There is a difference in the energy consumption of software projects in different programming languages that have the same functionality.
+% \item Method: Using twice the one sided Mann Whitney U test where in both cases the null hypothesis is that the distributions are the same but the alternative hypothesis is that one distribution is greater or less.
+% \item Result: For \textit{node28} in the most cases, 294 of 306 cases, we can reject the null hypothesis, but in 12 cases we can not. This is roughly 4\% and in these cases we cannot reject the null hypothesis. Which does not mean that they are not different, maybe the test is not powerful enough. For \textit{node29} the numbers change a bit, there we cannot reject the null hypothesis in 30 of the 306 cases. Which is roughly 10\%.
+% \item Conclusion: For most cases we reject the null hypothesis and accept the alternative hypothesis. Thus for most cases there is a difference in the energy consumption of software projects in different programming languages that have the same functionality.\\
+% \end{itemize}
 
 
-(2) \textbf{Is there a difference in energy consumption of different software projects (in the same programming language) that have the same functionality}
-\begin{itemize}
-\item Hypothesis: There is no difference in energy consumption of different software projects, in the same programming language, that have the same functionality.
-\item Alternative hypothesis: There is a difference in energy consumption of different software projects, in the same programming language, that have the same functionality.
-\item Method: Compare programs if they have the same language and solve the same problem. Perform twice the one sided Mann Whitney U test where in both cases the null hypothesis is that the distributions are the same but the alternative hypothesis is that one distribution is greater or less.
-\item Result: We cannot reject the null hypothesis in 24 of 479 (roughly 5\%) cases for the \textit{node28} and 50 of 479 (roughly 10\%) cases for the \textit{node29}.
-\item Conclusion: We for most cases reject the null hypothesis and accept the alternative hypothesis. Thus in most cases there is a difference in the energy consumption of software projects that are in the same programming language and solve the same problem.
-\end{itemize}
+% (2) \textbf{Is there a difference in energy consumption of different software projects (in the same programming language) that have the same functionality}
+% \begin{itemize}
+% \item Hypothesis: There is no difference in energy consumption of different software projects, in the same programming language, that have the same functionality.
+% \item Alternative hypothesis: There is a difference in energy consumption of different software projects, in the same programming language, that have the same functionality.
+% \item Method: Compare programs if they have the same language and solve the same problem. Perform twice the one sided Mann Whitney U test where in both cases the null hypothesis is that the distributions are the same but the alternative hypothesis is that one distribution is greater or less.
+% \item Result: We cannot reject the null hypothesis in 24 of 479 (roughly 5\%) cases for the \textit{node28} and 50 of 479 (roughly 10\%) cases for the \textit{node29}.
+% \item Conclusion: We for most cases reject the null hypothesis and accept the alternative hypothesis. Thus in most cases there is a difference in the energy consumption of software projects that are in the same programming language and solve the same problem.
+% \end{itemize}
+We looked at the impact the choice of programming language and way of coding has on the energy consumption. This was measured using a PDU and a distributed node system called DAS. These measurements were compared using the one sided Mann Whitney U test twice and in most cases we could reject one of the two null hypothesises. 
 
+When looking into the first research question (1) \textbf{Is there a difference in the energy consumption of software projects in different programming languages that have the same functionality}? we find that we cannot make a conclusion for all the problems for all the programming language combination. In the most cases we find a difference, but this difference could not be proven for every programming language combination for every problem. However for some problems on a specific node we can. There is a difference in the energy consumption of different programming languages that solve the problem Binarytrees, Fannkuchredux and Fasta on \textit{node28} and Binarytrees for \textit{node29}.\\
+
+For the second research question (2) \textbf{Is there a difference in energy consumption of different software projects (using the same programming language) that have the same functionality} we find that we cannot make a conclusion for all the projects. In most cases there is a difference in software projects that solve the same problem and are written in the same programming language, but not for all of the software projects combinations. We did find that there seemed to be a good representation of programming languages and problems for the cases where we could not prove they were different.
 
 \section{Future work}
 \label{sec:future_work}
+% more research what on code level, manually change one part and then measure, this way you get the difference in energy consumption of a small change
+In future research we would like to further investigate the difference on code level has on the energy consumption. This could be done by looking by having two identical programs and then slightly change one of them. Measure them both for the energy consumption, proof that they are different and show which one consumes less energy. When this is done for a lot of different small changes we could get a clearer view on how to write code in such a way that we consume less energy.\\
+
+We would also like to investigate what happens to the energy consumption when we add a pre-compilation phase to the programming languages that normally don't have this phase. It is also interesting to investigate what happens when we do other optimizations like caching of programs.
+
+%TODO:Also look at language that don't have a pre compilation set up, for pre compilation and other additional factors like caching to improve running same program better.

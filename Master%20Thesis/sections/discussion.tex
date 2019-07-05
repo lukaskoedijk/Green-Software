@@ -1,15 +1,94 @@
 \chapter{Discussion}
 \label{ch:discussion}
-In this chapter, we discuss the results of our experiment(s) on ...
+In this chapter we discuss the various results from the different experiments. First we will look at the results we got from comparing programming languages to each otter. Then we will discuss the results from comparing programs to each otter. Finally we will discuss some additional results we found.
+
+% \begin{finding}
+% 	Highlight like this an important finding of your analysis of the results.
+% 	\label{find:important1}
+% \end{finding}
+
+% Refer to Finding~\ref{find:important1}.\\
+
+% Findings:\\
+% -Compile flags matter\\
+% -c/c++ best choice concerning energy consumption\\
+% -javascript best of language that don't have precompilation\\
+% -time has influence\\
+% -code-level findings\\
+\section{Programming Language}
+Comparing the programming languages to each otter showed that most had a difference in their energy consumption, for 12 and 15 combinations on \textit{node28} and \textit{node29} respectively we could prove a difference. The combination of programming languages where we couldn't prove the difference for the most problems was C-noflags with C on \textit{node28} and C-noflags with C and C++-flags with C-flags on \textit{node29}. When looking at which programming language preforms the best confirm the energy consumption for every problem, we observe that C-flags and C++-flags are the best. This let us to conclude findings \ref{find:diffL} and \ref{find:best}.\\
 
 \begin{finding}
-	Highlight like this an important finding of your analysis of the results.
-	\label{find:important1}
+	There choice of programming language has an influence on the energy consumption of a program.
+	\label{find:diffL}
 \end{finding}
 
-Refer to Finding~\ref{find:important1}.
+\begin{finding}
+	Programming languages C and C++ perform the best concerning the energy consumption.
+	\label{find:best}
+\end{finding}
+
+Because we see notice the difference between programming languages that have a pre-compilation phase and those that don't, we also looked at the no pre-compilation programming languages separately. Here we observe that JavaScirpt performs better than the otter programming languages without a pre-compilation phase. Which let us conclude finding \ref{find:bestno}.\\
+
+\begin{finding}
+	From the programming languages that don't have a pre-compilation phase JavaScript performs the best concerning the energy consumption.
+	\label{find:bestno}
+\end{finding}
+
+We expected the compilation flags to play a part in the energy consumption of C and C++. When looking at the results we see that the measurements from C and C++ with compilation flags perform better concerning the energy consumption than the measurements from C and C++ without compilation flags. This let us to conclude finding \ref{find:flags}.\\
+
+\begin{finding}
+	Programs in the language C and C++ consume more energy when the amount of compilation flags are minimized.
+	\label{find:flags}
+\end{finding}
+
+\section{Programs}
+We observe that only a small amount of the energy measurements are labelled as anomalies, 4.8\% and 5.1\% for \textit{node28} and \textit{node29} respectively. We also see a difference in the behaviour of 63 programs based on the moment of measuring on \textit{node29}. Finally we see that when comparing programs that solve the same problem and are written in the same programming language most have a difference in their energy consumption, for 24 and 50 programs on \textit{node28} and \text{node29} respectively we can't prove their different. This let us to conclude finding \ref{find:written}.\\
+
+\begin{finding}
+	The way a program is written influences the energy consumption of that program.
+	\label{find:written}
+\end{finding}
+
+When comparing two programs, where we introduced a small difference, we found that a for-loop use less energy than a while-loop. We also compared the difference between having the body and condition of an if-statement on the same or different lines. Here we couldn't reject the null-hypothesis and thus it looks like the placement of the body doesn't matter. This let us conclude findings \ref{find:loop} and \ref{find:if}. 
+
+\begin{finding}
+	A for-loop consumes less energy than a while-loop.
+	\label{find:loop}
+\end{finding}
+
+\begin{finding}
+	Regards the energy consumption it doesn't matter if the body of an if-statement is on the same or different line as the condition.
+	\label{find:if}
+\end{finding}
+
+\section{Additional Findings}
+When comparing the measurements from both the different measurement nodes to each otter, we find that all but two programs have a difference in their energy consumption based on which node the program is run on. When comparing measurements from specific programs to each otter we observe a slight to low correlation and when we compare all programs in one language that solve one problem we observe a moderate to high correlation. This let us to conclude finding \ref{find:hardware}.\\
+
+\begin{finding}
+	The hardware has an influence on the energy consumption of a program running on it.
+	\label{find:hardware}
+\end{finding}
+
+If we look at the correlation between the energy consumption and the run time separately for every single problem, we observe that they all have a high correlation. At three problems we see not one but two trends, which shows that a point with a faster run time does not necessarily consume less energy. This let us to conclude finding \ref{find:time}.\\
+
+\begin{finding}
+	The run time of a program has an influence on the energy consumption, but a shorter run time does not always mean a lower energy consumption. 
+	\label{find:time}
+\end{finding}
 
 
+\section{Threads to validity}
+% Risks:\\
+% -compiler maybe expects people to program stupidly, compiler versions\\
+% -difference between language that pre compile and that don't\\
+% -removing idle state, measured this only before and after 8 hour run, maybe it fluctuates so big we should have measured for and after every program\\
+% -maybe too small sample size (22, 27)\\
 
-Risks:
--compiler maybe expects people to program stupidly
+We used programs listed on the \textit{the computer language benchmark game} which gave us a large amount of programs with the same functionality. These programs could be submitted by everyone and were checked to make sure they use the same algorithm and have the same output. For some programming languages there were more submissions than others, there were cases that for a problem there was only one submission for a programming language. Here we can't be certain that this one program represents the whole language for this problem, maybe we were just lucky and got the best performing program in that programming language confirm the energy consumption. This uncertainty could be decreased by finding more programs and measuring those for the energy consumption.\\
+
+The languages that normally have a pre-compilation phase have an advantage because the energy consumption of this pre-compilation was not measured. This approach was chosen for we found that this was a programming language feature and we wanted to mirror the real world use of the languages as close as possible. But there are ways of pre-compiling the other languages or improving the following runs by caching. This could improve the energy consumption of the no pre-compilation phase programming languages, resulting in a different comparison between the languages.\\
+
+Before the first program and after the last program of a single run we measured the idle state. This idle state was then used to subtract from the measurements to be able to compare the two different nodes. The time between the before and after idle measurement is eight hours. Maybe the idle state fluctuates so much that we were better of calculating the idle state before and after every single program. However we did not choose this option because it would increase the run time even more.\\
+
+Because of the long run time and the restrictions of only being able to measure outside of working hours we measured each program 27 times on \textit{node28} and 22 times on \textit{node29}. After this for most programs we decreased this number for they were detected as anomalies. This sample size could be on the small size giving less accurate results.
