@@ -149,16 +149,23 @@ elif test == '2':
             slopes.append(abs(kdist[k]-kdist[k-1]))
         div = 0.15
         eps = 1
-        color = []
+        index = -1
         for l in range(len(slopes)-1):
             if abs(slopes[l] - slopes[l+1]) >= div:
                 div = abs(slopes[l] - slopes[l+1])
                 eps = kdist[l+1]
-                color = ['b' for i in range(l+1)] + ['r'] + ['b' for i in range(len(slopes)-1-l)]
+                index = l
+        if index == -1:
+            color = ['b' for i in range(len(kdist))]
+            shape = ['.' for i in range(len(kdist))]
+        else:
+            color = ['b' for i in range(index+1)] + ['r'] + ['b' for i in range(len(slopes)-1-index)]
+            shape = ['.' for i in range(index+1)] + ['x'] + ['.' for i in range(len(slopes)-1-index)]
     
         plt.figure()
         plt.subplot(212)
-        plt.scatter([i for i in range(len(kdist))], kdist, c=color, marker='.')
+        for i in range(len(kdist)):
+            plt.scatter(i, kdist[i], c=color[i], marker=shape[i])
         plt.xlabel("ID")
         plt.ylabel("eps")
 
@@ -166,23 +173,31 @@ elif test == '2':
         cluster = DBSCAN(eps=eps, min_samples=minPts, metric='euclidean').fit(data)
         label = cluster.labels_
         color = []
+        shape = []
         for q in range(len(data)):
             if label[q] == -1:
                 color.append('r')
+                shape.append('x')
                 results.append([allnames[total.index(d)][q], eps, d[q][0], d[q][1]])
             elif label[q] == 0:
                 color.append('b')
+                shape.append('.')
             elif label[q] == 1:
                 color.append('g')
+                shape.append('.')
             elif label[q] == 2:
                 color.append('y')
+                shape.append('.')
             elif label[q] == 3:
                 color.append('c')
+                shape.append('.')
             else:
                 color.append('b')
+                shape.append('.')
     
         plt.subplot(211)
-        plt.scatter([x[0] for x in d], [y[1] for y in d], c=color, marker='.')
+        for i in range(len(d)):
+            plt.scatter(d[i][0], d[i][1], c=color[i], marker=shape[i])
         plt.xlabel('time(s)')
         plt.ylabel('Joule(surface)')
         plt.ylim(bottom=0)
